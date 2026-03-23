@@ -1,0 +1,9 @@
+# PDFs and reference materials
+*.pdf
+
+# Claude Code local settings
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db
