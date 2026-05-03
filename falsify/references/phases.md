@@ -39,6 +39,15 @@ Locate governance documents, test suites, and source code relevant to the claim.
 3. `ARCHITECTURE.md` or `docs/ARCHITECTURE.md`
 4. `docs/standards/`
 5. Any `.md` files in the module directory that describe behavior
+6. `_dev_materials/*/DECISIONS.md` (writing harness — see below)
+
+**Writing harness integration:**
+
+When `_dev_materials/*/DECISIONS.md` is found, the claim may target a document rather than code. Load the harness artifacts from the same directory:
+- DECISIONS.md entries are falsifiable assertions (each decision is a claim about the document)
+- FINDINGS.md Landed entries are verification targets ("did F-07 actually land in the text?")
+- MANIFESTO.md Implicit-tier entries are negative probes ("verify M-08 has NOT been surfaced in the text")
+- anchors/ files are precision references for dilution detection (compare prose against anchor)
 
 For each document found, extract:
 - Claims about behavior (CIC section 3)

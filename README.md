@@ -24,12 +24,34 @@ A collection of Claude Code skills for software engineering governance, analysis
 | **review-diff** | Pre-ship changeset review for maintainability |
 | **falsify** | Popperian falsification audit against claims about software behavior |
 
+### Strategic Writing
+
+| Skill | Purpose |
+|-------|---------|
+| **writing-harness** | Initialize the artifact substrate for strategic documents (DECISIONS.md, FINDINGS.md, MANIFESTO.md, anchors/, failure mode catalog) |
+| **strategic-draft** | Collaborative document drafting through structured Q&A with green/red spectrum tracking, three-question mechanism, and full harness artifact management |
+
+**How to use:** Run `/strategic-draft` to start drafting a document. The skill auto-bootstraps a writing harness if one doesn't exist, asks three setup questions (title, audience, failure conditions), then enters a Q&A loop where every paragraph gets questioned on ground truth, strategy, and reader impact. Sharp formulations are anchored, decisions are recorded, and the green/red oscillation between generative and critical modes is tracked behaviorally. Run `/writing-harness` separately if you want to initialize the artifact structure without drafting.
+
+### Risk Management
+
+| Skill | Purpose |
+|-------|---------|
+| **register-risk** | Register risks and concerns into the repository's technical risk register |
+| **review-rr** | Review, curate, and prioritize the risk register (triage, strategic, or prioritize mode) |
+
 ### Maintenance
 
 | Skill | Purpose |
 |-------|---------|
 | **tech-debt-cleanup** | Structured identification and safe cleanup of technical debt |
 | **autoresearch** | Autonomous experiment loop to optimize a single metric |
+
+### Knowledge Graphs
+
+| Skill | Purpose |
+|-------|---------|
+| **graphify** | Turn any folder of files into a navigable knowledge graph with community detection and audit trail |
 
 ### Utility
 
