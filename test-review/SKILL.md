@@ -49,6 +49,10 @@ Execute these 7 phases sequentially. For detailed instructions, consult `referen
 6. Gap Analysis (prioritized list of missing tests by severity and category)
 7. Test Health Summary (overall assessment, category balance, top recommendations)
 
+## Risk Register Integration
+
+Format coverage gaps and CIC guarantee violations rated Critical or High in register-compatible format (ID, tier, trigger, source, location, narrative). Do not append directly to the register — output the findings and let the user invoke `register-risk` to handle deduplication, tier validation, and registration.
+
 ## Severity Levels
 
 - **Critical:** CIC guarantee with zero test coverage; fail-loud behavior untested

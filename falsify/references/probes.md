@@ -1,6 +1,6 @@
 # Falsification Probes: Categories and Selection
 
-Seven probe categories target different dimensions of a claim. Each category attacks a distinct failure mode that other categories miss.
+Eight probe categories target different dimensions of a claim. Each category attacks a distinct failure mode that other categories miss.
 
 ---
 
@@ -207,6 +207,63 @@ Seven probe categories target different dimensions of a claim. Each category att
 
 ---
 
+## Category H -- Adequacy Probes
+
+**Definition:** Probe whether the artifact addresses what its field, discipline, or comparable artifacts require it to address. Unlike Categories A–G, which test what the artifact *says*, Category H tests what the artifact *does not say but should*.
+
+**Epistemological basis:** Imre Lakatos argued that the most important criticism of a scientific theory is often not that it fails on its own terms, but that it fails to address a known anomaly within its research programme. A paper can be internally flawless and still inadequate if it ignores a standard requirement that comparable work addresses. Deborah Mayo's severity criterion sharpens this: a test has severity for an error only if there is a high probability the test would have detected the error, if the error existed. Categories A–G have near-zero severity for errors of omission because no probe derived solely from the artifact's content can detect what the artifact fails to mention. Category H probes are the only probes with non-zero severity for this error class.
+
+**Use when:** The artifact makes a contribution to a field with established standards, prior art, or known failure modes. Especially important for research papers, statistical methods, scoring rules, and any domain where "what you don't address" is as important as "what you do address." Not applicable for purely internal artifacts (config files, utility scripts) with no field-level expectations.
+
+**How to probe:**
+
+1. **Identify the field.** What research programme, discipline, or domain does this artifact contribute to? What are its key concepts, standard requirements, and known open problems?
+
+2. **Identify comparables.** What are 3–5 artifacts (papers, implementations, standards) that address a similar problem? What topics do they cover that this artifact does not? (See the Comparables Step in `references/phases.md`.)
+
+3. **Identify standard objections.** If a domain expert reviewed this artifact, what would they expect it to address? What are the standard critiques in this field that every serious contribution must pre-empt?
+
+4. **For each gap, formulate a falsifiable probe.** "The artifact addresses [topic X] that [comparable / field standard] requires." Execute by searching the artifact for evidence it addresses X. Absence is the falsifying observation.
+
+**What makes a good adequacy probe:**
+
+- It identifies a specific, named concept or requirement from the field — not a vague "should be more thorough"
+- The concept is genuinely expected by the field, not merely adjacent or tangential
+- The artifact's failure to address it would be noticed by a competent reviewer in the field
+- The probe has a concrete falsification criterion: either the artifact addresses the concept or it does not
+
+**What makes a bad adequacy probe:**
+
+- "The paper should be more comprehensive" — not falsifiable, not specific
+- "The paper doesn't discuss [obscure tangent]" — the concept must be a genuine field requirement, not a nice-to-have
+- Probing for omission of something the artifact explicitly scopes out — if the paper says "we do not address X" and provides a reason, that is not an omission but a scoping decision (which may itself be questioned, but that is a different probe)
+- Demanding exhaustive literature review — the probe targets specific, important gaps, not completeness for its own sake
+
+**Example (research paper — scoring rules):**
+- Claim: "The paper's argument is adequate for publication in a scoring-rules venue."
+- Comparable: Gneiting & Raftery (2007) require propriety to hold for both location and scale parameters.
+- Probe: "The paper verifies propriety for the scale parameter, not just location."
+- Falsification criterion: No sigma-sweep, no scale-consistency discussion, no acknowledgement that the metric's scale behaviour differs from classical CRPS.
+
+**Example (software system — API readiness):**
+- Claim: "The API is production-ready."
+- Comparable: Similar APIs in the ecosystem (e.g., Stripe, Twilio) provide rate limiting, idempotency keys, and pagination.
+- Probe: "The API implements idempotency keys for non-GET requests."
+- Falsification criterion: No idempotency key support in the API specification or implementation.
+
+**Example (statistical method — M-estimator framing):**
+- Claim: "The M-estimator framework is correctly described."
+- Field requirement: M-estimator theory distinguishes between loss functions and influence functions (ψ = ∂ρ/∂r). A paper claiming to generalise ψ-functions must show the derivative has non-trivial structure (saturation, redescension, curvature).
+- Probe: "The loss function's derivative w.r.t. the residual has non-trivial shape (not flat in |r|)."
+- Falsification criterion: The derivative is w(h) · sign(r) — flat in |r|, meaning the "ψ-function" has none of the structural properties that define the class.
+
+**Relationship to other categories:**
+- Category B (Contracts) tests stated promises. Category H tests unstated expectations.
+- Category D (Consumer Simulation) asks "can a consumer use this?" Category H asks "does this cover what the field expects?"
+- Category E (Consistency) checks internal agreement. Category H checks agreement with external expectations.
+
+---
+
 ## Probe Selection Heuristic
 
 Not every audit needs all probe categories. Select based on the situation:
@@ -219,10 +276,11 @@ Not every audit needs all probe categories. Select based on the situation:
 | Code with governance docs (ADRs, CICs) | B (contracts), E (consistency) | Docs create testable promises; check if they're kept |
 | Code touching provenance/audit | G (temporal), B (contracts), E (consistency) | Provenance must be deterministic, complete, and honest |
 | Code with external dependencies | F (adversarial), B (contracts), D (consumer) | External inputs are unreliable; test failure handling |
+| Research paper or novel method | H (adequacy), B (contracts), E (consistency) | Omissions are the #1 reviewer objection; field requirements matter more than internal polish |
 
 When the situation is mixed, select the union of prioritized categories. If in doubt, include Category B (contracts) -- it applies everywhere.
 
-**Minimum coverage:** 3-5 probes from at least 3 different categories.
+**Minimum coverage:** 3-5 probes from at least 3 different categories. For research artifacts or novel methods, at least one probe must be Category H.
 
 ---
 

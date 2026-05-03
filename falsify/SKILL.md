@@ -47,9 +47,13 @@ Execute these 10 phases sequentially. For detailed instructions on each phase, c
 5. Pattern Analysis (cross-cutting themes, systemic issues, recurring bug classes)
 6. Verdict (FALSIFIED / CONTESTED / SURVIVED with rationale)
 
+## Risk Register Integration
+
+Format hard and soft falsifications in register-compatible format (ID, tier, trigger, source, location, narrative). Do not append directly to the register — output the findings and let the user invoke `register-risk` to handle deduplication, tier validation, and registration. The failing test stubs and register entries serve complementary purposes: tests enforce the fix, register entries track the risk.
+
 ## Severity Levels
 
-- **Hard falsification:** The system produces a wrong answer silently, violates a documented contract (CIC, ADR, docstring), or documentation lies about behavior. The claim is disproven. Must fix before the claim can be reasserted.
+- **Hard falsification:** The system produces a wrong answer silently, violates a documented contract (CIC, ADR, docstring), documentation lies about behavior, or the artifact omits a topic that its field requires and a reviewer would reject for. The claim is disproven. Must fix before the claim can be reasserted.
 - **Soft falsification:** Unexpected behavior that is not dangerous but undermines confidence. Missing validation, undocumented edge case, surprising default. Should fix.
 - **Observation:** Behavior is technically correct but surprising or poorly documented. Worth noting. Does not falsify the claim.
 
@@ -66,4 +70,6 @@ Execute these 10 phases sequentially. For detailed instructions on each phase, c
 - Do not retroactively add probes to claim you predicted a finding you discovered during execution. Record unexpected discoveries as bonus observations.
 - Quality of probes matters more than quantity. Five well-targeted probes beat twenty shallow ones.
 - When a claim spans multiple modules, ensure probes cover integration boundaries, not just individual modules.
+- For research artifacts and novel methods, include at least one Category H (Adequacy) probe. The most important finding in a falsification campaign is often an omission, not an error. See `references/epistemology.md` on claim scope.
+- When the user provides only narrow, artifact-internal claims across multiple rounds, suggest a broader adequacy claim. Narrow claims cannot detect omissions — see the two-pass discipline in `references/epistemology.md`.
 - Consult `references/epistemology.md` if tempted to weaken a finding or design only probes you know will pass.

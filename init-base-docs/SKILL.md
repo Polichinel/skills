@@ -9,7 +9,7 @@ description: Initializes architectural governance documentation (ADRs + CIC infr
 
 Follow these rules strictly.
 
-- Do not write project-specific ADRs (010+). This skill only handles constitutional ADRs (000-009).
+- Do not write project-specific ADRs (010+). This skill handles constitutional ADRs (000-009) plus the technical risk register ADR.
 - Do not create CICs for classes. Only set up CIC infrastructure (template + README).
 - Do not run repo-assimilation. Greenfield projects have nothing to assimilate.
 - Do not invent domain vocabulary the user has not provided or confirmed.
@@ -39,8 +39,9 @@ Execute these 9 phases sequentially. For detailed instructions, consult `referen
 5. **Set Up CIC Infrastructure** -- Create CIC directory with template and adapted README
 6. **Set Up Contributor Protocols** -- Copy carbon + silicon protocols; ask about hardened template
 7. **Set Up Standards** -- Copy logging standard; ask about physical architecture standard
-8. **Write Files** -- Create directory structure, write all documents, include meta-tools
-9. **Verify Coherence** -- Check cross-references, completeness, run validate_docs.sh
+8. **Set Up Risk Register** -- Use `register-risk` to create empty `reports/technical_risk_register.md` and its governing ADR
+9. **Write Files** -- Create directory structure, write all documents, include meta-tools
+10. **Verify Coherence** -- Check cross-references, completeness, run validate_docs.sh
 
 ## Required Output Structure
 
@@ -63,6 +64,8 @@ Before reporting success, verify:
 - Templates (adr_template.md, cic_template.md) are present and unmodified
 - contributor_protocols/ contains carbon_based_agents.md and silicon_based_agents.md (+ hardened if selected)
 - standards/ contains logging_and_observability_standard.md (+ physical_architecture_standard.md if selected)
+- `reports/technical_risk_register.md` is present with empty summary table and tier definitions
+- Technical risk register ADR is present and references the register file
 - INSTANTIATION_CHECKLIST.md is present with completed items checked off
 - validate_docs.sh is present and passes when run
 

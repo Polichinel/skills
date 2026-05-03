@@ -42,6 +42,42 @@ The risky prediction step (Phase 5) enforces this discipline. You must state wha
 
 ---
 
+## Claim Scope and the Omission Blind Spot
+
+### The problem
+
+A narrow claim like "the notation in §3 is correct" generates probes that examine §3's notation. Every probe is derived from the artifact's content. This is effective for finding errors in what is stated, but it is structurally incapable of finding errors of omission — things the artifact should address but does not.
+
+A broader claim like "the argument is adequate for a stat.AP reviewer" generates probes that require knowledge of what stat.AP reviewers expect. Some of these probes will target content the artifact does not contain. This is the only way to detect omissions.
+
+This is not a subjective preference for broad over narrow. It is a structural property of how hypotheses constrain probe generation. Narrow hypotheses constrain probes to the artifact's content. Broad hypotheses allow probes to be generated from the artifact's context — its field, its comparables, its audience's expectations.
+
+### Lakatos on internal vs external adequacy
+
+Imre Lakatos distinguished between a theory's internal consistency and its engagement with the research programme it claims to contribute to. A theory that is internally consistent but ignores established problems in its field is what Lakatos called "degenerating" — it is not engaging with the hardest challenges the programme faces. The most important criticism of a scientific theory is often not that it gets something wrong, but that it fails to address what its field requires.
+
+Applied to auditing: an artifact that passes all internal-coherence probes but fails to address a known field requirement is analogous to a degenerating programme. The finding is not "you got X wrong" but "you did not address Y, and Y is required." This is a falsifying observation — the claim "this artifact is adequate for its field" is disproven by the absence of Y.
+
+### When to push back on narrow claims
+
+The auditor should accept narrow claims for rounds focused on internal correctness (notation, figures, code-doc alignment). But the auditor should also ensure that at least one round per audit campaign tests the artifact's relationship to its field. Specifically:
+
+- If the user provides only narrow, artifact-internal claims across multiple rounds, the auditor should say: "These claims test internal correctness. They cannot detect omissions — topics the artifact should address but does not. I recommend adding a round with a broader claim like '[artifact] makes an adequate argument for [field/venue/audience]' to probe for gaps."
+- If the user provides a readiness claim ("ready for publication," "ready for production," "ready for the next team to consume"), the auditor must treat this as requiring Category H (Adequacy) probes. Readiness claims are inherently about external expectations, not just internal correctness.
+- If the user provides a claim that is so narrow it can only generate trivial probes (e.g., "line 47 is correct"), the auditor should suggest broadening to the function or module level.
+
+### The two-pass discipline
+
+For audit campaigns (multiple rounds on the same artifact), use two passes:
+
+**Pass 1 — Internal coherence.** Narrow claims targeting the artifact's stated content. "Is the notation correct?" "Do the figures match the data?" "Does the code match the documentation?" These use Categories A–G.
+
+**Pass 2 — External adequacy.** At least one broad claim targeting the artifact's relationship to its field. "Is the argument adequate for a [field] reviewer?" "Does the system address what comparable systems address?" This uses Category H.
+
+Pass 2 should not be deferred to "after we finish Pass 1." Run at least one adequacy round early in the campaign — ideally round 2 or 3, not the final round. If Pass 2 reveals a major omission, it may reprioritise all remaining Pass 1 work.
+
+---
+
 ## Anti-Patterns
 
 ### 1. "Tests pass, therefore done"

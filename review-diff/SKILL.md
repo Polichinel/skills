@@ -49,6 +49,10 @@ Execute these 3 phases sequentially. For detailed check criteria, consult `refer
 - **E -- Pattern Consistency:** Deviates from module patterns, different strategies than surrounding code
 - **F -- Contract Alignment (conditional):** New/changed public API not in CIC, CIC guarantee violations, undocumented failure modes. Skipped if no CICs exist.
 
+## Risk Register Integration
+
+Format critical-severity findings in register-compatible format (ID, tier, trigger, source, location, narrative). Do not append directly to the register — output the findings and let the user invoke `register-risk` to handle deduplication, tier validation, and registration. Warning and suggestion-severity findings do not warrant register tracking.
+
 ## Severity Levels
 
 - **Critical:** Silent error swallowing, data loss risk, contract violation, logic duplication of critical code. Should block shipping.

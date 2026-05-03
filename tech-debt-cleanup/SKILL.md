@@ -52,6 +52,10 @@ Execute these 5 phases sequentially. Complete Phase 1 fully before beginning any
 5. Deferred Issues (debt left unresolved due to risk)
 6. Stabilization Summary (how cleanup improves maintainability without increasing risk)
 
+## Risk Register Integration
+
+Format newly discovered debt and deferred issues in register-compatible format (ID, tier, trigger, source, location, narrative). Do not append directly to the register — output the findings and let the user invoke `register-risk` to handle deduplication, tier validation, and registration.
+
 ## Performance Notes
 
 - Take your time. Safety is more important than speed.

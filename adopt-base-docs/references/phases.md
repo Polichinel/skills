@@ -228,7 +228,32 @@ This section is mandatory for brownfield CICs. Honest documentation of deviation
 
 ---
 
-## Phase 10 -- Write Files
+## Phase 10 -- Set Up Risk Register
+
+Use the `register-risk` skill to create and seed the technical risk register.
+
+### Register creation
+
+Invoke `register-risk` with the Technical Risk Inventory from Phase 2 (repo-assimilation output) as context. The `register-risk` skill will:
+- Create `reports/technical_risk_register.md` if it doesn't exist (using its canonical template from `references/schema.md`)
+- Create the governing ADR (number follows the last constitutional ADR)
+- Register each risk with sequential IDs, validated tiers, and actionable triggers
+- Set source to "repo-assimilation" for all seeded entries
+
+If repo-assimilation identified no risks, `register-risk` will create an empty register with the standard template.
+
+### Governing ADR
+
+The ADR created by `register-risk` should:
+- Formalize the register as a first-class governance artifact
+- Define concern format: ID (C-xx for concerns, D-xx for disagreements), tier, trigger, source
+- Define tier definitions (1-4)
+- Reference `reports/technical_risk_register.md`
+- Note that concerns are registered via the `register-risk` skill and curated via the `review-rr` skill
+
+---
+
+## Phase 11 -- Write Files
 
 Create the full directory structure under the docs directory name from Phase 3.
 
@@ -255,6 +280,9 @@ Create the full directory structure under the docs directory name from Phase 3.
 │   └── physical_architecture_standard.md    (if selected)
 ├── INSTANTIATION_CHECKLIST.md  (adapted, completed items checked)
 └── validate_docs.sh            (verbatim from base_docs)
+
+reports/
+└── technical_risk_register.md  (seeded from repo-assimilation risks)
 ```
 
 ### CIC file naming:
@@ -279,7 +307,7 @@ Copy verbatim from base_docs. Do not modify.
 
 ---
 
-## Phase 11 -- Verify Coherence
+## Phase 12 -- Verify Coherence
 
 Extended verification for brownfield. Check everything from init-base-docs plus code-grounding:
 
@@ -297,9 +325,12 @@ Extended verification for brownfield. Check everything from init-base-docs plus 
 12. Templates are unmodified copies of originals
 13. contributor_protocols/ contains the selected protocol files, grounded in project context
 14. standards/ contains the selected standard files, grounded in project patterns
-15. INSTANTIATION_CHECKLIST.md is present with completed items checked
-16. Run `bash validate_docs.sh` in the docs directory -- it must pass (exit 0)
-17. Protocol file cross-references resolve (e.g., ADR-007 → silicon_based_agents.md)
+15. `reports/technical_risk_register.md` exists with entries matching repo-assimilation risks
+16. Technical risk register ADR is present and references the register file
+17. Register entry count in header matches actual entries
+18. INSTANTIATION_CHECKLIST.md is present with completed items checked
+19. Run `bash validate_docs.sh` in the docs directory -- it must pass (exit 0)
+20. Protocol file cross-references resolve (e.g., ADR-007 → silicon_based_agents.md)
 
 If any check fails, fix the issue before reporting completion.
 

@@ -139,7 +139,34 @@ Adapt from base_docs:
 
 ---
 
-## Phase 8 -- Write Files
+## Phase 8 -- Set Up Risk Register
+
+Use the `register-risk` skill to create an empty technical risk register and its governing ADR.
+
+### Register creation
+
+Invoke `register-risk` with no findings (greenfield project has no risks yet). The `register-risk` skill will:
+- Create `reports/technical_risk_register.md` using its canonical template (from `references/schema.md`)
+- Create the governing ADR (number follows the last constitutional ADR)
+
+The canonical template includes:
+- Header table with project name, owner, date, and zero counts
+- Tier definitions (1: Critical, 2: High, 3: Medium, 4: Low)
+- Empty sections for Open Concerns, Disagreements, Resolved Concerns
+- Register Conventions section
+
+### Governing ADR
+
+The ADR should:
+- Formalize the register as a first-class governance artifact
+- Define concern format: ID (C-xx for concerns, D-xx for disagreements), tier, trigger, source
+- Define tier definitions (1-4)
+- Reference `reports/technical_risk_register.md` as the active file
+- Note that concerns are registered via the `register-risk` skill and curated via the `review-rr` skill
+
+---
+
+## Phase 9 -- Write Files
 
 Create the full directory structure under the docs directory name from Phase 2.
 
@@ -164,6 +191,9 @@ Create the full directory structure under the docs directory name from Phase 2.
 │   └── physical_architecture_standard.md    (if selected)
 ├── INSTANTIATION_CHECKLIST.md  (adapted, completed items checked)
 └── validate_docs.sh            (verbatim from base_docs)
+
+reports/
+└── technical_risk_register.md  (empty register with tier definitions)
 ```
 
 ### Lifecycle organization (if requested):
@@ -203,7 +233,7 @@ Copy verbatim from base_docs. Do not modify.
 
 ---
 
-## Phase 9 -- Verify Coherence
+## Phase 10 -- Verify Coherence
 
 Run through the quality checklist from SKILL.md. For each item:
 
@@ -217,9 +247,11 @@ Run through the quality checklist from SKILL.md. For each item:
 8. `adr_template.md` and `cic_template.md` are unmodified copies of the originals
 9. contributor_protocols/ contains the selected protocol files
 10. standards/ contains the selected standard files
-11. INSTANTIATION_CHECKLIST.md is present with completed items checked
-12. Run `bash validate_docs.sh` in the docs directory -- it must pass (exit 0)
-13. Protocol file cross-references resolve (e.g., ADR-007 → silicon_based_agents.md)
+11. `reports/technical_risk_register.md` exists with empty summary table and tier definitions
+12. Technical risk register ADR is present and references the register file
+13. INSTANTIATION_CHECKLIST.md is present with completed items checked
+14. Run `bash validate_docs.sh` in the docs directory -- it must pass (exit 0)
+15. Protocol file cross-references resolve (e.g., ADR-007 → silicon_based_agents.md)
 
 If any check fails, fix the issue before reporting completion.
 

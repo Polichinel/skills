@@ -9,7 +9,7 @@ description: Retrofits architectural governance documentation (ADRs + CICs) onto
 
 Follow these rules strictly.
 
-- Do not write project-specific ADRs (010+). Only constitutional ADRs (000-009), but suggest 010+ candidates in the output.
+- Do not write project-specific ADRs (010+). Only constitutional ADRs (000-009) plus the technical risk register ADR, but suggest 010+ candidates in the output.
 - Do not refactor or modify existing code. Document what exists, even if imperfect.
 - Do not fabricate architectural details. If something is unclear from the code, state the ambiguity.
 - Always preserve all mandatory sections from each ADR template. Never drop sections.
@@ -42,8 +42,9 @@ Execute these 11 phases sequentially. For detailed instructions, consult `refere
 7. **Write CICs** -- Create intent contracts for all confirmed non-trivial classes
 8. **Set Up Contributor Protocols** -- Copy carbon + silicon protocols (grounded in project tooling); ask about hardened template
 9. **Set Up Standards** -- Copy logging standard (grounded in project patterns); ask about physical architecture standard
-10. **Write Files** -- Create directory structure, write all documents, include meta-tools
-11. **Verify Coherence** -- Check docs match actual code, cross-references valid, run validate_docs.sh
+10. **Set Up Risk Register** -- Use `register-risk` to create `reports/technical_risk_register.md` (if it doesn't exist) and seed it with Technical Risk Inventory from Phase 2 (repo-assimilation output), plus its governing ADR
+11. **Write Files** -- Create directory structure, write all documents, include meta-tools
+12. **Verify Coherence** -- Check docs match actual code, cross-references valid, run validate_docs.sh
 
 ## Required Output Structure
 
@@ -69,6 +70,9 @@ Before reporting success, verify:
 - Templates (adr_template.md, cic_template.md) are present and unmodified
 - contributor_protocols/ contains carbon + silicon protocols (+ hardened if selected), grounded in project tooling
 - standards/ contains logging standard (+ physical architecture if selected), grounded in project patterns
+- `reports/technical_risk_register.md` is present, seeded with risks from repo-assimilation
+- Technical risk register ADR is present and references the register file
+- Register entries have IDs, tiers, triggers, and sources matching assimilation findings
 - INSTANTIATION_CHECKLIST.md is present with completed items checked off
 - validate_docs.sh is present and passes when run
 

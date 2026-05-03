@@ -52,6 +52,10 @@ When given a system description or codebase:
 5. Long-Term Regret Test
 6. Engineering Recommendation
 
+## Risk Register Integration
+
+Format failure modes as concern entries (C-xx) and cross-expert disagreements as disagreement entries (D-xx) in register-compatible format (ID, tier, trigger, source, location, narrative). Do not append directly to the register — output the findings and let the user invoke `register-risk` to handle deduplication, tier validation, and registration.
+
 ## Principles
 
 - Provide specific observations, not generic advice

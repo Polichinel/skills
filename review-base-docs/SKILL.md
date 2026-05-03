@@ -46,6 +46,10 @@ Execute these 6 phases sequentially. For detailed instructions, consult `referen
 6. Proposed Remediations (prioritized action list: critical to minor)
 7. Documentation Health Summary (overall assessment, trends, recommendations)
 
+## Risk Register Integration
+
+If the repository maintains a technical risk register, recommend that critical and high findings be added as register entries in the Proposed Remediations section, formatted to match its convention. This skill remains read-only — it recommends entries but does not write them.
+
 ## Severity Levels
 
 - **Critical:** Broken contracts (CIC references deleted class), dangling cross-references, Active docs for removed code

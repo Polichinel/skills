@@ -58,6 +58,36 @@ For each document found, extract:
 
 If existing tests fail: **STOP**. Report: "Cannot run a falsification audit on a red baseline. Fix failing tests first." The audit starts from a state where all known tests pass.
 
+**Identifying comparables (for Category H probes):**
+
+When the claim involves readiness for external review, publication, production deployment, or any context where the artifact will be judged against field expectations, identify 3–5 comparable artifacts before designing probes. This step is the empirical basis for Category H (Adequacy) probes.
+
+What counts as a comparable:
+- A paper in the same field addressing a similar problem
+- A competing implementation or library with similar scope
+- A standard or specification that the artifact claims to conform to
+- A prior version of the same artifact (if the claim is about improvement)
+
+How to identify comparables:
+1. From the artifact's own citations and references: what does it position itself against?
+2. From the field's canonical references: what would a reviewer expect to see cited?
+3. From the auditor's knowledge of the domain: what similar work exists?
+
+What to extract from each comparable:
+- What topics does the comparable cover that this artifact does not?
+- What standard objections does the comparable pre-empt?
+- What failure modes does the comparable address?
+- What methodological requirements does the comparable satisfy (e.g., proving propriety for both location and scale, providing a power analysis, testing across distributional families)?
+
+The output of this step is a **gap list**: topics covered by comparables but absent from the artifact under audit. Each gap becomes a candidate Category H probe in Phase 3.
+
+Epistemological justification: comparables serve the same function as a reference implementation in Category A (Parity) probes. Just as Category A asks "does the output match the reference?", Category H asks "does the coverage match what the field expects?" The field's expectations are operationalised through comparables, not asserted abstractly. This is evidence, not appeal to authority.
+
+Constraints:
+- The comparables step is for hypothesis generation, not mechanical checklist application. Not every topic a comparable covers is necessarily required in this artifact. Each gap must be evaluated: is this a genuine field requirement, or is it specific to the comparable's different scope?
+- Do not confuse "the comparable does X" with "this artifact must do X." The probe is: "a competent reviewer in this field would expect this artifact to address X." The comparable is evidence for that expectation, not proof.
+- If no comparables exist (truly novel work with no precedent), note this and skip the comparables step. Category H probes can still be generated from known field requirements, but the empirical basis is weaker.
+
 ---
 
 ## Phase 3 -- Derive Probes
@@ -85,6 +115,14 @@ From ADRs:
 - Docstring claims: One Category B probe per behavioral claim in docstrings
 - Type hints: One Category C probe for inputs that accept Optional types -- what happens with None?
 - Default values: One Category E probe -- is the default consistent everywhere it appears?
+
+**Auto-derivation from comparables (when comparables step was performed in Phase 2):**
+
+For each gap identified in the comparables step:
+- Formulate: "The artifact addresses [gap topic] that [comparable(s)] cover and [field] expects."
+- Classify as Category H.
+- Set the falsification criterion: the artifact contains no substantive discussion of, implementation of, or explicit scoping-out of the gap topic.
+- Rate the gap's importance: Would a reviewer reject for this omission, request revisions, or merely note it? Only gaps rated "reject" or "revisions" become probes. "Note" items are recorded as observations if encountered during execution but do not warrant dedicated probes.
 
 **Applying the selection heuristic:**
 
@@ -309,7 +347,7 @@ Produce the structured output matching the Required Output Structure in SKILL.md
 For each probe:
 ```
 ### Probe #N -- [short title]
-**Category:** [A-G]
+**Category:** [A-H]
 **Prediction:** [risky prediction from Phase 5]
 **Actual:** [what happened]
 **Verdict:** [Passed / Hard Falsification / Soft Falsification / Observation]

@@ -50,6 +50,10 @@ Produce output with exactly these 8 sections:
 7. Technical Risk Inventory
 8. System Summary
 
+## Risk Register Integration
+
+Format Phase 7 risks in register-compatible format (ID, tier, trigger, source, location, narrative) so the user can register them via the `register-risk` skill. Do not append directly to the register — output the findings and let the user invoke `register-risk` to handle deduplication, tier validation, and registration.
+
 ## Performance Notes
 
 - Take your time to do this thoroughly
