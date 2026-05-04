@@ -30,8 +30,9 @@ A collection of Claude Code skills for software engineering governance, analysis
 |-------|---------|
 | **writing-harness** | Initialize the artifact substrate for strategic documents (DECISIONS.md, FINDINGS.md, MANIFESTO.md, anchors/, failure mode catalog) |
 | **strategic-draft** | Collaborative document drafting through structured Q&A with green/red spectrum tracking, three-question mechanism, and full harness artifact management |
+| **review-harness** | Sync harness artifacts against the current document (update stale statuses) or prioritize what to work on next |
 
-**How to use:** Run `/strategic-draft` to start drafting a document. The skill auto-bootstraps a writing harness if one doesn't exist, asks three setup questions (title, audience, failure conditions), then enters a Q&A loop where every paragraph gets questioned on ground truth, strategy, and reader impact. Sharp formulations are anchored, decisions are recorded, and the green/red oscillation between generative and critical modes is tracked behaviorally. Run `/writing-harness` separately if you want to initialize the artifact structure without drafting.
+**How to use:** Run `/strategic-draft` to start drafting a document. The skill auto-bootstraps a writing harness if one doesn't exist, asks three setup questions (title, audience, failure conditions), then enters a Q&A loop where every paragraph gets questioned on ground truth, strategy, and reader impact. Sharp formulations are anchored, decisions are recorded, and the green/red oscillation between generative and critical modes is tracked behaviorally. Run `/writing-harness` separately if you want to initialize the artifact structure without drafting. Run `/review-harness sync` to update stale artifact statuses after a drafting session, or `/review-harness prioritize` to get a ranked action plan for what to work on next.
 
 ### Risk Management
 

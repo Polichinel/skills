@@ -161,7 +161,7 @@ If the writer goes quiet after a question, wait. Do not fill the silence with mo
 
 **Manifesto entries** (when strategic intent surfaces): When the writer reveals something that "must be felt but never stated," or when a new explicit requirement emerges, add an M-XX entry to the appropriate tier. For implicit-tier entries, always ask: "Should this stay below the surface?" before recording.
 
-**Findings** (when questions reveal issues): When a three-question exchange reveals a problem (unsupported claim, audience mismatch, strategic misalignment), create an F-XX entry with Status: Pending. The finding exists whether or not the paragraph is revised in this session.
+**Findings** (mandatory check after each Q&A exchange): After every three-question exchange, ask yourself: "Did any question reveal a gap, unsupported claim, audience mismatch, or strategic misalignment?" If yes, create an F-XX entry with Status: Pending immediately — even if the writer revised the paragraph in response. The finding exists as a record that the issue was surfaced. If the revision addressed it, the finding can be marked Landed during Phase 6. An empty FINDINGS.md after extensive Q&A is a sign this step is being skipped.
 
 **Paragraph-level workflow:**
 
@@ -174,11 +174,11 @@ Three questions (ground truth, strategy, reader impact)
   ↓
 Writer responds → Revision loop (0-N rounds)
   ↓
+Log any findings from the Q&A (mandatory check)
+  ↓
 Anchor any sharp formulations
   ↓
 Record any decisions made
-  ↓
-Log any findings discovered
   ↓
 Next paragraph
 ```
@@ -195,13 +195,15 @@ Sentry checks are silent when they pass. Only flag when triggered.
 
 ## Phase 6 — Consolidate Artifacts
 
-At natural breakpoints, synchronize the harness artifacts with the current state of the document.
+Synchronize the harness artifacts with the current state of the document. This phase has mandatory triggers — do not skip or defer it.
 
-**What counts as a natural breakpoint:**
-- A section is complete (the last paragraph in a planned section has been drafted and questioned)
-- The writer says "let's stop here" or "save progress"
-- The session has been running for a long time (30+ exchanges) and a check is overdue
-- The writer shifts to a new topic that doesn't follow from the current one
+**Mandatory triggers (run Phase 6 when ANY of these occur):**
+1. **A section is complete.** After the last paragraph in a section has been drafted and questioned, run Phase 6 before starting the next section. This is not optional.
+2. **The writer says "let's stop here" or "save progress."**
+3. **The writer shifts to a different section** out of sequence.
+4. **10 paragraphs have been drafted** since the last Phase 6 run, regardless of section boundaries.
+
+Do not wait for the writer to ask for a sync. The whole point of Phase 6 is that it catches drift the writer and AI are too close to notice.
 
 **Synchronization checklist:**
 

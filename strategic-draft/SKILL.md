@@ -36,10 +36,10 @@ Execute these 7 phases. For detailed instructions on each phase, consult `refere
 3. **Assess Scale and Plan** — Estimate complexity, choose drafting rhythm (short/medium/long)
 4. **Resolve Foundations** — Surface scope boundary, primary claim, and audience assumption before drafting
 5. **Draft via Q&A** — The core loop: writer provides, AI structures and questions, artifacts accumulate
-6. **Consolidate Artifacts** — At natural breakpoints, synchronize DECISIONS.md, FINDINGS.md, MANIFESTO.md, and anchors
+6. **Consolidate Artifacts** — **Mandatory** after each section completion, after 10 paragraphs, or when the writer shifts sections. Synchronize DECISIONS.md, FINDINGS.md, MANIFESTO.md, and anchors. Do not wait to be asked.
 7. **Handoff** — Produce a session summary with what was drafted, what's open, and where to start next
 
-Phases 1–4 happen once per session (or are skipped if resuming with resolved foundations). Phase 5 is the bulk of the session. Phases 6–7 happen at breakpoints and session end.
+Phases 1–4 happen once per session (or are skipped if resuming with resolved foundations). Phase 5 is the bulk of the session. Phase 6 fires mechanically during Phase 5 at its triggers. Phase 7 happens at session end.
 
 ## Artifact Creation Rules
 
