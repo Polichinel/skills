@@ -1,6 +1,6 @@
 # Claude Code Skills
 
-A collection of Claude Code skills for software engineering governance, analysis, and workflow automation.
+A collection of Claude Code skills for software engineering governance, strategic writing, analysis, and workflow automation.
 
 ## Skills
 
@@ -32,7 +32,15 @@ A collection of Claude Code skills for software engineering governance, analysis
 | **strategic-draft** | Collaborative document drafting through structured Q&A with green/red spectrum tracking, three-question mechanism, and full harness artifact management |
 | **review-harness** | Sync harness artifacts against the current document (update stale statuses) or prioritize what to work on next |
 
-**How to use:** Run `/strategic-draft` to start drafting a document. The skill auto-bootstraps a writing harness if one doesn't exist, asks three setup questions (title, audience, failure conditions), then enters a Q&A loop where every paragraph gets questioned on ground truth, strategy, and reader impact. Sharp formulations are anchored, decisions are recorded, and the green/red oscillation between generative and critical modes is tracked behaviorally. Run `/writing-harness` separately if you want to initialize the artifact structure without drafting. Run `/review-harness sync` to update stale artifact statuses after a drafting session, or `/review-harness prioritize` to get a ranked action plan for what to work on next.
+**How to use:** The writing skills share an artifact harness (`_dev_materials/<document>/`) that tracks decisions, findings, manifesto entries, and precision anchors across sessions.
+
+- `/strategic-draft` — Start or resume drafting. Auto-bootstraps a harness if none exists. Every paragraph gets three questions (ground truth, strategy, reader impact). Sharp formulations are anchored, decisions recorded, and the green/red oscillation between generative and critical modes is tracked.
+- `/review-harness sync` — After a drafting session, compare harness artifact statuses against the actual document text and update what's stale (decisions resolved but still marked Open, findings addressed but still Pending, manifesto entries landed but not verified).
+- `/review-harness prioritize` — Get a ranked action plan: what to resolve, draft, or fix next, ordered by what blocks what.
+- `/writing-harness` — Initialize the artifact structure deliberately (seed manifesto tiers, create anchors from reference materials) before drafting begins.
+- `/persona-critique` — Deploy domain expert and writing craft personas to critique a draft. Produces structured findings in `critiques/` that feed the harness pipeline.
+- `/verify-sources` — Verify every citation against local source PDFs. Maintains a citation ledger in `citations/`.
+- `/falsify` — Audit claims in the harness: decisions become falsifiable assertions, landed findings become verification targets, implicit manifesto entries become negative probes.
 
 ### Risk Management
 

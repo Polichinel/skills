@@ -1,6 +1,6 @@
 ---
 name: writing-harness
-description: Initializes and manages the writing harness artifact structure for strategic documents. Creates DECISIONS.md (drift defense), FINDINGS.md (findings ledger), MANIFESTO.md (implicit/explicit strategy), and anchors/ (precision skip connections) in _dev_materials/. Use when user says "init writing harness", "set up writing harness", "initialize harness for", or "create writing artifacts for". Do NOT use for drafting, critiquing, or revising — those are separate skills that consume harness artifacts.
+description: Initializes and manages the writing harness artifact structure for strategic documents. Creates DECISIONS.md (drift defense), FINDINGS.md (findings ledger), MANIFESTO.md (implicit/explicit strategy), anchors/ (precision skip connections), and citations/ (source verification records) in _dev_materials/. Use when user says "init writing harness", "set up writing harness", "initialize harness for", or "create writing artifacts for". Do NOT use for drafting, critiquing, or revising — those are separate skills that consume harness artifacts.
 ---
 
 # Writing Harness
@@ -24,6 +24,7 @@ _dev_materials/<document_slug>/
 ├── FINDINGS.md               # From references/findings_template.md
 ├── MANIFESTO.md              # From references/manifesto_template.md
 ├── anchors/                  # Empty directory, ready for skip connections
+├── citations/                # Empty directory, ready for source verification records
 ├── critiques/                # Empty directory, ready for persona outputs
 ├── falsification/            # Empty directory, ready for audit outputs
 └── external_feedback/        # Empty directory, ready for third-party input
@@ -64,7 +65,9 @@ Based on the writer's answers in Step 1:
 
 Show the writer what was created. Confirm the MANIFESTO.md Reader's Takeaway captures the destination correctly. Note which skills can now operate on this harness:
 - `falsify` can audit claims in DECISIONS.md and verify FINDINGS.md entries
-- Future persona-critique and strategic-draft skills will read and write these artifacts
+- `verify-sources` can check every citation against local PDFs (uses `citations/` directory)
+- `persona-critique` can deploy domain and craft personas to critique drafts (writes to `critiques/` directory)
+- `strategic-draft` reads and writes all harness artifacts during the Q&A drafting loop
 
 ## Artifact Cross-References
 
