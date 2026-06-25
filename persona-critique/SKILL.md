@@ -53,6 +53,10 @@ A bespoke persona generated fresh for each critique invocation. Briefed from:
 
 The scout looks for the domain-specific vulnerability that no fixed persona would catch. It names itself based on what it decides to watch for.
 
+## Boundary with expert-method-review
+
+This skill critiques **writing and argument** — how a draft communicates, whether claims are well-supported, whether the reader is served. `expert-method-review` critiques **design and methodology** — what to build and why, judged against the literature and the data-generating process. If a domain persona finds itself opining on architecture choices, loss functions, or experiment design rather than how the *text* argues about them, that concern belongs in `/expert-method-review`. Both skills use named personas with documented stances — where a figure appears in both pools, they carry the same stance but apply it to their skill's domain (argument quality vs methodology quality).
+
 ## Library Integration
 
 Domain personas may access the research library at `~/brain/9_library/` for grounded references. The library contains ~300 papers with two access layers:

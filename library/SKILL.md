@@ -265,12 +265,13 @@ import json
 from src.library import add_build_prompt, get_config
 config = get_config()
 result = add_build_prompt('PAPER_ID', config)
-print(json.dumps({
-    'system_prompt': result['system_prompt'],
-    'user_prompt': result['user_prompt'],
-}, indent=2))
+print(json.dumps({k: v for k, v in result.items() if k != 'tools'}, indent=2, default=str))
 "
 ```
+
+**Check the result's `chunked` field.** If `false`, this is a standard single-pass extraction. If `true`, follow the chunked workflow below.
+
+**Standard (single-pass) extraction:**
 
 Read the system prompt and user prompt. Follow the extraction guidelines. Extract claims using the `extract_claims` tool schema:
 
@@ -278,6 +279,31 @@ Read the system prompt and user prompt. Follow the extraction guidelines. Extrac
 - `relations`: list of relations between claims, each with `source_claim_index`, `target_claim_ref`, `relation_type` (supports/contradicts/extends/contextualizes), and `confidence`
 
 Extract 3-8 claims per paper. Stay close to the paper's language. Propose cross-paper relations when existing claims are provided.
+
+**Chunked extraction (large documents >400K chars):**
+
+The result contains `"chunked": true` and a `"chunks"` list. Each chunk has its own `system_prompt`, `user_prompt`, and `tools`. Process each chunk sequentially:
+
+1. For each chunk (in order), read its `system_prompt` and `user_prompt`. Extract claims from that chunk only - do not re-extract claims from the abstract unless the chunk materially extends it.
+2. Collect raw extraction outputs from all chunks.
+3. After all chunks are processed, run deduplication:
+
+```bash
+cd /home/simon/brain/9_library/library_system && .venv/bin/python -c "
+import json
+from src.extraction import deduplicate_proposals
+from src.schema import ClaimProposal
+claims = [ClaimProposal(**c) for c in ALL_CLAIMS_JSON]
+unique, duplicate_pairs = deduplicate_proposals(claims, threshold=0.85)
+print(json.dumps({
+    'unique_claims': [c.model_dump() for c in unique],
+    'duplicate_pairs': duplicate_pairs,
+}, indent=2))
+"
+```
+
+4. If duplicate pairs are found, present them side by side for the user to resolve (keep one, merge, or discard).
+5. Proceed to Phase 3 with the deduplicated claims as a single combined extraction.
 
 #### Phase 3: Validate extraction
 
@@ -298,7 +324,8 @@ print(json.dumps(result, indent=2))
 2. **Confidence — provenance gate:** For each claim with confidence "proven," confirm the proof appears in this paper, not cited from another. If cited, change to "argued."
 3. **Completeness — boundary check:** For each theorem or positive construction captured, check whether the paper states an impossibility or failure condition. If yes, consider whether it warrants a separate claim or passage.
 4. **Formulas — OCR verification:** Any formula extracted from OCR text must be spot-checked (plug in a small case, check dimensions, verify coefficients). OCR reliably drops superscripts, subscript nesting, and fraction structure.
-5. **Numbers — source verification:** Any specific count or number stated in a claim must appear in the paper. If the paper doesn't state the number, use approximate language ("over 30") rather than a precise count.
+5. **Numbers — source verification:** Any specific count or number stated in a claim must appear in THIS paper. If the paper doesn't state the number, use approximate language ("over 30") rather than a precise count. When a number is flagged for review, verify the correction against this paper's own tables and text only — do not import values from other papers' tables. A confident wrong correction is worse than the original uncertainty.
+6. **Relations — rationale verification:** For each cross-paper relation, verify that every technique or vocabulary the rationale attributes to the target paper actually appears in that paper. If the rationale names a method, term, or comparison the target paper doesn't contain, rewrite the rationale to state only what both papers actually say. Prefer contrast ("both constrain σ(W) via independent mechanisms") over derivation ("applies X's technique").
 
 Present validated proposals to the user:
 - Each claim with type, confidence, and provenance
@@ -336,6 +363,24 @@ Report:
 - Relations stored
 - Corrections stored
 - BibTeX entry
+- Citation key: show the auto-generated default key (e.g., `bessac2021`) from the result's `citation_key` field
+
+**Citation key check:** The result includes `citation_key` (the generated default) and `citation_keys` (the full list on the sidecar). Show the default key and ask: "This paper is registered with citation key `<key>`. If you use a different key in your `.bib` files (e.g., `bessac2021forecast`), tell me and I'll add it as an alias." If the user provides aliases, save them:
+
+```bash
+cd /home/simon/brain/9_library/library_system && .venv/bin/python -c "
+from src.metadata_store import load_metadata, save_metadata
+from src.config import load_config
+from pathlib import Path
+config = load_config(Path('config.yaml'), Path('..'))
+meta = load_metadata('PAPER_ID', config.paths.meta_dir)
+for key in ['ALIAS1', 'ALIAS2']:
+    if key not in meta.citation_keys:
+        meta.citation_keys.append(key)
+save_metadata('PAPER_ID', meta, config.paths.meta_dir)
+print(f'Citation keys: {meta.citation_keys}')
+"
+```
 
 After finalization, suggest running `/library rebuild` to update the search index.
 

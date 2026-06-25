@@ -23,6 +23,7 @@ A collection of Claude Code skills for software engineering governance, strategi
 | **review-base-docs** | Detect drift between governance docs and current code |
 | **review-diff** | Pre-ship changeset review for maintainability |
 | **falsify** | Popperian falsification audit against claims about software behavior |
+| **expert-method-review** | Library-grounded multi-persona critique of ML/research design and methodology |
 
 ### Strategic Writing
 
@@ -49,6 +50,13 @@ A collection of Claude Code skills for software engineering governance, strategi
 | **register-risk** | Register risks and concerns into the repository's technical risk register |
 | **review-rr** | Review, curate, and prioritize the risk register (triage, strategic, or prioritize mode) |
 
+### Research
+
+| Skill | Purpose |
+|-------|---------|
+| **library** | Claim-centric research library: manage papers, extract claims, verify citations, semantic search |
+| **rnd-dossier** | Scaffold and maintain R&D experimentation dossiers (pre-register, log, promote to ADR) |
+
 ### Maintenance
 
 | Skill | Purpose |
@@ -67,6 +75,19 @@ A collection of Claude Code skills for software engineering governance, strategi
 | Skill | Purpose |
 |-------|---------|
 | **hello-world** | Demo skill for testing |
+
+## Skill Seams — Responsibility Boundaries
+
+Skills compose through filesystem artifacts, not programmatic APIs. Where responsibilities overlap, one skill owns the concern and others delegate or consume its output.
+
+| Boundary | Skill A owns | Skill B owns | Seam |
+|----------|-------------|-------------|------|
+| **verify-sources** vs **library verify** | Document-level citation audit (batch, harness-integrated) | Single-claim targeted verification (calibrated confidence, drift analysis) | verify-sources resolves PDFs via library sidecars; delegates to `/library verify` for claims where the library has extracted evidence |
+| **expert-method-review** vs **persona-critique** | Design/methodology: *what to build and why* (pre-implementation) | Writing/argument: *how it's argued* (post-draft) | Shared named-persona convention; method-review seats from `references/personas.md`, persona-critique from its own domain panels. Same figure carries the same documented stance in both |
+| **expert-method-review** vs **falsify** | Generative: proposes what's missing, surfaces disagreements | Destructive: tries to break specific claims | Method-review precedes pre-registration; falsify attacks claims after |
+| **rnd-dossier** vs **expert-method-review** | Experiment lifecycle governance (scaffold, pre-register, log, promote) | Design critique that shapes what's worth testing | Dossier orchestrates; method-review critiques `02_design` before pre-registration |
+| **rnd-dossier** vs **register-risk** | Records experiment outcomes and methodology gaps | Owns the risk register (dedup, tiering, linking) | Dossier outputs register-compatible risks; `register-risk` handles intake |
+| **library** vs all research/writing skills | Data layer: papers, claims, metadata, search index, verification engine | Each skill's domain concern | Skills consume library via `/library search`, `/library find`, `/library verify`, sidecar reads. No skill duplicates library storage or search |
 
 ## Installation
 
