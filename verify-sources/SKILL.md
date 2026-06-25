@@ -47,13 +47,26 @@ The writing-harness skill creates the `citations/` directory. If it doesn't exis
 ### Phase 2: Library Check
 
 For each citation key:
-1. Check the bibliography file (`.bib`) for the entry — extract title, authors, year
-2. Search for the PDF in the local library. Standard search paths:
+
+1. **Locate the bibliography file.** Search in order:
+   - Project-local `.bib` files (same directory as the document, or `paper/` subdirectory)
+   - A `.bib` path specified in the LaTeX preamble (`\bibliography{}` or `\addbibresource{}`)
+   Extract title, authors, year from each bib entry.
+
+2. **Resolve citation keys via library sidecars.** The library at `~/brain/9_library/papers/_meta/` contains JSON sidecars for each paper. Each sidecar may include a `citation_keys` field — a list of bib keys that refer to this paper across different projects. Check these first:
+   - Load all sidecars that have a non-empty `citation_keys` list
+   - If the citation key appears in any sidecar's `citation_keys`, the PDF is `~/brain/9_library/papers/<sidecar.filename>`
+   This is the fastest and most reliable resolution path.
+
+3. **Fallback: filename heuristic.** If no sidecar match, attempt to match by author surname + year against library filenames (e.g., `bessac2021forecast` → `Bessac2021_*.pdf`). Search paths:
    - `lit/` and subdirectories within the project
    - `~/brain/9_library/papers/` and subdirectories
-   - `~/brain/9_library/new_temp/`
+   - `~/brain/9_library/incoming/` and subdirectories
    - `~/Downloads/` (last resort)
-3. If no PDF is found: **immediate Critical finding.** Report to user. Do not proceed with verification for that citation unless the user provides a path or confirms it's an online-only resource.
+
+4. **No match found:** **immediate Critical finding.** Report to user. Do not proceed with verification for that citation unless the user provides a path or confirms it's an online-only resource.
+
+5. **Side effect — register new citation keys.** When a fallback match succeeds (step 3), offer to add the citation key to the matched sidecar's `citation_keys` list so future lookups are instant. Use the `load_metadata`/`save_metadata` pattern from `/library add` Phase 4.
 
 ### Phase 3: Check Citation Ledger
 
@@ -140,7 +153,7 @@ Present the full report to the user.
 
 | Key | Title (short) | Tier | Claims | Verdict | Verified | PDF |
 |-----|---------------|------|--------|---------|----------|-----|
-| bessac2021forecast | Bessac & Naveau (2021) | 1 | 5 | ACCURATE | 2026-05-07 | ~/brain/9_library/new_temp/Bessac2021_... |
+| bessac2021forecast | Bessac & Naveau (2021) | 1 | 5 | ACCURATE | 2026-05-07 | ~/brain/9_library/papers/Bessac2021_... |
 | lerch2017forecasters | Lerch et al. (2017) | 1 | 2 | IMPRECISE | 2026-05-07 | lit/scoring_rules/Lerch-... |
 ```
 ## Invocation
@@ -154,6 +167,7 @@ Present the full report to the user.
 
 ## Integration with Other Skills
 
+- **library** (data layer): Phase 2 resolves PDFs via library sidecars (`citation_keys` field). For TIER 1 citations where the library has extracted claims or text for the paper, delegate the claim-vs-source check to `/library verify` — it provides calibrated confidence, drift analysis, and evidence provenance that this skill would otherwise reconstruct from scratch. Fall back to direct PDF reading only when the library lacks evidence for that paper.
 - **persona-critique**: If `\cite{}` commands exist in the draft but no `citations/CITATION_LEDGER.md` exists, persona-critique should note in its summary: "Source verification has not been run. Consider `/verify-sources`."
 - **writing-harness**: Creates the `citations/` directory during harness initialization.
 - **falsify**: Can use citation records as evidence when auditing claims about external sources.
