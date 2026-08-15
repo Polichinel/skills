@@ -6,8 +6,8 @@
 | Owner             | Polichinl (simmaa@prio.org)          |
 | Last Updated      | 2026-08-15                           |
 | Total Concerns    | 14                                   |
-| Open Concerns     | 14                                   |
-| Resolved Concerns | 0                                    |
+| Open Concerns     | 13                                   |
+| Resolved Concerns | 1                                    |
 
 ---
 
@@ -68,7 +68,7 @@ See also C-09 (C-02 is the extreme case of the flat-vs-split layout inconsistenc
 
 The repository contains no test, no CI workflow, and no validation script; the only executable artifact referenced anywhere (`scripts/validate_thing.sh`) lives outside the repo in `views_platform/þingit/`. Five invariants are cheaply and mechanically verifiable and none is checked: frontmatter validity across all 24 `SKILL.md` files, `references/` path resolution across 40 files, cross-skill name existence, external path availability, and README-to-filesystem consistency. Three of those five are already violated (C-01, C-04) and survived nine commits undetected. This is the root-cause entry for C-01, C-04, and C-05, which are its symptoms. It is also a self-application gap: `README.md:112` asserts "Testing is mandatory critical infrastructure," and `ship-it/SKILL.md` enforces `ruff` and `pytest` gates on target repositories while this repository has neither. Partially mitigated only within `thingit`, whose external 16-check validator demonstrates the pattern the rest of the repo lacks. Tier rationale: held at Tier 3 rather than raised to Tier 2 to avoid double-counting — the severity of this omission is already carried by the symptom entries C-01, C-04, and C-05, each tiered on its own consequence. Tier 3 reflects the residual risk of future undetected drift, not the sum of what it has already caused. Confirmed at Tier 3 during review-rr strategic review (2026-08-15).
 
-Root cause of C-01, C-04, and C-05. See also C-07 (uncommitted state would also be caught by a repository-state check).
+Root cause of C-01, C-04, and C-05. See also C-07 (resolved — uncommitted state would also be caught by a repository-state check, so it remains a candidate validator rule).
 
 ---
 
@@ -117,20 +117,6 @@ Symptom of C-03. See also C-01 (the same assumption already broken for `base_doc
 Six responsibility boundaries are documented in the README seams table and restated in prose inside both participating skills — three copies of each contract, none generated from the others. The design is deliberate (`README.md:81`: "Skills compose through filesystem artifacts, not programmatic APIs") and the seams themselves are unusually well specified, naming who owns what and how the other side delegates. The cost is dual maintenance: a one-sided edit leaves two stale descriptions behind with no detection mechanism, and the affected skills continue to run while routing work to the wrong owner. Commit `7cb1d9c` ("formalize cross-skill seams") introduced the triplication in bulk, so all six pairs share the same drift exposure. Not currently mitigated.
 
 Related to C-03 (a generated or validated seams table would close this). See also C-04 (same line, `register-risk/SKILL.md:22`, dangling-name aspect) and D-01, which records the deliberate trade-off that produces this cost — C-06 is the residual price of that choice, not a defect in it.
-
----
-
-### C-07: a complete skill and an edited skill are outside version control
-
-| Field | Value |
-|-------|-------|
-| ID | C-07 |
-| Tier | 3 |
-| Source | repo-assimilation (2026-08-15) |
-| Trigger | When someone runs `git clean -fd`, clones this repository fresh, or migrates to another machine, verify that `thingit/` and the `library/SKILL.md` modification were committed first — `/ship-it` Step 4's `git add -u` stages the latter but not the former. |
-| Location | `thingit/` (untracked, 128 lines), `library/SKILL.md` (modified, unstaged) |
-
-`git status` reports `?? thingit/` and ` M library/SKILL.md`. `thingit` is a complete and unusually rigorous skill implementing a cross-repo deliberation protocol backed by a 16-check external validator, and it is the only skill in the collection with zero inbound references from anything — including the README — which is consistent with it never having been integrated. The `library/SKILL.md` modification is likewise unreviewed and uncommitted. Loss is irreversible rather than merely inconvenient, which is what places this above Tier 4 despite its single-developer scope. Mitigated in principle by `ship-it/SKILL.md` Step 3, which is designed to stop on exactly this condition ("If untracked files exist that are not in .gitignore: **STOP**"), but that gate has not been run against this working tree.
 
 ---
 
@@ -261,7 +247,13 @@ Detectable by the C-03 validator (ID uniqueness and count reconciliation are mec
 
 ## Resolved Concerns
 
-(No resolved concerns yet.)
+### C-07: a complete skill and an edited skill are outside version control — RESOLVED
+
+| Field | Value |
+|-------|-------|
+| ID | C-07 |
+| Resolved | 2026-08-15 |
+| Resolution | Commit `156d0c4` brought both paths under version control: the previously untracked `thingit/` skill (128 lines) and the unstaged `library/SKILL.md` modification (ADR-019 PDF naming convention plus the `add_confirm_metadata` atomic rename workflow), alongside the register and ADR-001. The `library/SKILL.md` diff was read before staging rather than committed unreviewed. |
 
 ---
 
