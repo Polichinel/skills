@@ -235,6 +235,17 @@ Add a new paper to the library. This is a multi-phase HITL workflow.
 
 #### Phase 1: Prepare
 
+**Step 1a: Copy and rename the PDF.** Before calling `add_prepare`, the PDF must be in `papers/` with a convention-compliant name per ADR-019: `<FirstAuthorSurname><Year>_<ShortTitle>.pdf`. If the PDF is elsewhere (e.g., `incoming/`), copy it to `papers/` with the correct name first. Read the first page of the PDF to determine the correct author/year/title if needed.
+
+Naming rules:
+- `FirstAuthorSurname`: last name of first author, no accents, capitalized
+- `Year`: four-digit publication year
+- `ShortTitle`: 2-5 word descriptive title, CamelCase
+
+Examples: `Gneiting2007_StrictlyProperScoringRules.pdf`, `Giacomini2006_TestsConditionalPredictiveAbility.pdf`
+
+**Step 1b: Run add_prepare** with the correctly-named PDF in `papers/`.
+
 ```bash
 cd /home/simon/brain/9_library/library_system && .venv/bin/python -c "
 import json
@@ -255,7 +266,18 @@ Present to the user:
 
 Wait for user confirmation before continuing.
 
-If metadata was generated (not from existing sidecar), ask the user to confirm or correct the title, authors, and year before proceeding.
+If metadata was generated (not from existing sidecar), ask the user to confirm or correct the title, authors, and year before proceeding. If the paper_id needs correcting (wrong name, typo), use `add_confirm_metadata` with `new_paper_id` to rename all files atomically:
+
+```bash
+cd /home/simon/brain/9_library/library_system && .venv/bin/python -c "
+from src.library import add_confirm_metadata, get_config
+config = get_config()
+result = add_confirm_metadata('OLD_PAPER_ID', 'TITLE', ['AUTHOR1', 'AUTHOR2'], YEAR, new_paper_id='NEW_PAPER_ID', config=config)
+print(result)
+"
+```
+
+This renames the meta sidecar, extracted text, and PDF. Claims and corrections files must be renamed separately if they already exist.
 
 #### Phase 2: Build extraction prompt
 
