@@ -227,6 +227,109 @@ E1 principally tests the CLAUDE.md digest; E2 and E3 test the skill. A fourth ev
 
 ---
 
+## 11. Evidence from views_platform
+
+Investigation run 2026-08-15 across 21 risk registers (~27,000 lines) and 24 post-mortems (~3,200 lines) in `~/Documents/scripts/views_platform`. Read-only; nothing in that tree was modified.
+
+**This section is additive.** §§1–10 record what was reasoned from first principles before any of this was read, and are left standing unchanged. Where the evidence contradicts them it is said plainly here and the original claim is not edited. Deciding what to do about a contradiction is a separate call, with §9 still open.
+
+### 11.1 Convergence data (Q2)
+
+| Repo | Total | Open | Resolved | Rate | Recorded curation / exit states |
+|---|---:|---:|---:|---:|---|
+| views-datafactory | 349 | 42 | 304 | **87%** | `[DEFER]`, demoted→tech-debt, merged IDs, separate `register_changelog.md`, guard test |
+| views-frames | 78 | 14 | 64 | **82%** | disagreements tracked separately |
+| views-postprocessing | 102 | 22 | 80 | **78%** | — |
+| þingit | 13 | 4 | 9 | **69%** | scope note delegating content risks to another register |
+| views-faoapi | 160 | 54 | 106 | **66%** | 5 demoted→tech-debt |
+| views-baseline | 38 | 12 | 25 | **66%** | `Withdrawn` state |
+| views-reporting | 78 | 11 | 67 | **86%** | — |
+| views-models | 147 | 64 | 43+22 mit. | ~44% | **7 exit states**; `review-rr strategic` 2026-07-31 |
+| views-hydranet | 285 | 133 | 152 | **53%** | `[DEMOTED]` + Tech-Debt Backlog; `review-rr strategic` 2026-08-15 took open 145→120 |
+| views-appwrite | 64 | 52 | 12 | 19% | live/dormant split (37/15) |
+| views-r2darts2 | 19 | 14 | 5 | 26% | — |
+| views-stepshifter | 36 | 32 | 2 | 6% | `Invalidated` state |
+| views-crafdapi | 26 | 25 | 1 | 4% | — |
+| views-lstm-lab | 23 | 23 | 0 | **0%** | none |
+| views-impact | 29 | 29 | 0 | **0%** | none |
+
+The separator is not repo age or size — `views-datafactory` is the largest register and the most converged. It is **whether a curation pass was ever run and whether exit states other than "resolved" exist.** Every register above 60% has at least one of deferral, demotion, withdrawal, dormancy, or merging. Every register at 0% has only open/resolved.
+
+### 11.2 Findings
+
+**F1 — CONTRADICTS §5.3.** *The register is already the brake, and `review-rr` already removes work.*
+§5.3 claims every analysis skill adds work and none removes it. `views-reporting/documentation/extraction_postmortem.md` states the opposite outright: *"The register also prevented scope creep — disagreements (D-07, D-08, D-09) were recorded and deferred rather than rat-holed on."* That register reached *"21/21 resolved, 0 open"* in five days. `views-hydranet`'s header records a `review-rr strategic` pass on 2026-08-15 that relocated 24 entries to Resolved, merged C-188 into C-182, re-tiered C-134, demoted 7 Tier-4 entries and took open concerns 145→120. `views-models` records its own first full pass on 2026-07-31. The subtractive skill §5.3 says does not exist is `review-rr`, and it was running the same day the blueprint was written.
+
+**F2 — QUALIFIES §4.** *Architecture is a minority failure class.*
+Root-cause taxonomy across the 24 post-mortems: roughly **8 data/correctness** (grid-id leak, 603 unmapped GAUL cells, RNG drift, stale zarr, pre-deploy checks), **7 ML/method negative results** (locked dropout, gated ZINB core, explosion/rollout, hard-gate escalations, target compression, multi-target, Cramér distance), **4 process/governance** (falsification process, both eftirmál, epic 339), **4 architecture/complexity** (extraction, ontology liberation, data backbone, hydranet roadmap). The blueprint's four failure modes are real but account for roughly a sixth of recorded incidents. §4's evaluation-first premise holds; its implied *weight* does not.
+
+**F3 — CONTRADICTS the §2/§4 premise.** *The philosophy is already operating, in Simon's own vocabulary, inside the registers.*
+The vocabulary sweep found it being applied at live decision points, by agents, unprompted:
+- *"the user's **WET-before-DRY preference** says write 3 times before abstracting"* — his rule, cited by name, in a register entry
+- *"Kernel factory rejected as **over-abstraction** — duplication is structurally intentional"*
+- *"the balancer does not **earn its place**"* — the philosophy's own phrase
+- *"a polymorphic interface would be speculative (**YAGNI/ISP**: don't force an interface nobody dispatches on)"*
+- *"defer composition as **gold-plating** (revisit only if #100 adds a second consumer — REP/CCP)"*
+- *"fixing an unused function mid-epic is **scope creep**"*
+- *"a **premature abstraction** would have outlived the implementation it existed to unify"*
+
+The pasted prompt is not introducing a missing constraint. It is already propagating.
+
+**F4 — SUPPORTS §5.1 (WET before DRY). Strongest single confirmation in the corpus.**
+`views-reporting/documentation/extraction_postmortem.md`: *"**WET-before-DRY was the right call.** Moving code as exact copies, without simultaneous refactoring, kept each PR reviewable and individually revertible. The temptation to 'fix it while we're moving it' was real … but mixing extraction with remediation would have made every PR a gamble instead of a mechanical step. The refactoring happened afterward, on stable ground, with tests in place."* An 8,285-LOC extraction, 20 PRs, validating the rule by name.
+
+**F5 — QUALIFIES §5.1 (Minimum Machinery). The deliberate counter-evidence hunt (Q3).**
+Three incidents were fixed by *adding* structure, not removing it:
+- `views-hydranet/.../2026-02-02_final_post_mortem_and_roadmap.md` — *"The common thread was **Implicit Knowledge**. The code 'guessed' where the Time, ID, and Spatial dimensions were using magic numbers … When the data structure shifted, the code didn't fail — it drifted."* Fixed by adding the `VolumeHandler` custodian, a role ledger, and a Planner/Lens split. This validates **Explicit State** while cutting against **Minimum Machinery**, and the tension is real: the same `VolumeHandler` is the worked example of responsibility accumulation in `review-rr/references/analysis.md`. Machinery added correctly, then over-accumulated.
+- `extraction_postmortem.md` C-01 — a module-level singleton corrupted **20% of MAP estimates** under joblib threads, silently, shipping for an unknown duration. *"Module-level mutable singletons in a library that uses joblib are a Tier 1 risk by default."*
+- `evaluation_ontology_liberation` — *"**The config is the contract.** Moving from implicit inference (prefix → transformation → metric space) to explicit declaration made every failure mode visible."*
+
+And one unrecorded tension: `post_mortem_data_backbone.md` builds a `ReferenceGeometryReader` Protocol for a **single** implementation, justified as *"If we want to switch to fiona or pyogrio later, nothing else changes"* — textbook speculative generality, cited approvingly as *"Uncle Bob's dependency inversion,"* and **not logged as a regret anywhere.** Appendix A forbids exactly this. The digest needs a qualifier: minimum machinery is a rule about *speculative* machinery, not about structure that makes state explicit.
+
+**F6 — REVISES §8 risk 5 and constrains §5.2.** *A check that fires on correct behaviour destroys its own authority.*
+`þingit/eftirmál_02.md` §3(f): *"**a check that fires on correct behaviour teaches people to ignore checks.** V9 is currently in that state."* §3(e): the length cap *"fires on everyone and therefore teaches nothing"* — the doubter spent *"six editing passes across two turns chasing 2.6% of a soft cap and at one point made the file longer."* That is a governance mechanism manufacturing exactly the churn `converge` exists to stop. If `converge` returns TRIM or NARROW on well-scoped work, it will be ignored within weeks. §8 risk 5 anticipated the failure; this names the mechanism and gives it a measured precedent.
+
+**F7 — RECASTS §1 and §4.** *The dominant recorded cost is process machinery, not code machinery.*
+`eftirmál_02.md` §4, the operator's own words:
+- *"The cognitive load of you saying 'one item', 'two small things', etc is immense and soul crushing."*
+- *"I have not been able to work on any of the involved repos or move forward"* — and *"it's been quite demanding in tokens."*
+- *"I barely understand 1, 2, 3, or 4 because of jargon and shorthand. I have no idea if we are at a good place or if this is now completely inbred garbage."*
+- *"How can I ratify when I don't know what I am ratifying?"*
+
+§5's one-sentence lesson: the mechanism *"is worth nothing to the person paying for it unless every artifact that reaches them is written in language they can act on without a translator."* The blueprint aims a brake at over-engineered **code**. The loudest recorded pain is over-engineered **process** — and `converge` would be more process. That does not sink it, but it means the skill must be judged on the operator's cognitive load, not only on the code it improves.
+
+**F8 — ADDS a fifth failure mode not in §4.** *Wrong-diagnosis thrashing.*
+Two independent occurrences:
+- `post_mortem_data_backbone.md`: *"I went down a rabbit hole of `uv pip install`, `.venv/bin/python -m pytest`, and other hacks — the user rightfully stopped me. The second time … I started doing the same thing before catching myself."* Lesson: *"Diagnose the root cause before trying workarounds."*
+- `postmortem_pgm_forecast_stripe_grid_id_leak.md` §7: *"**First diagnosis was wrong: blamed the plotting tool.** … That was confidently stated and **wrong**."*
+
+Confident wrong diagnosis followed by escalating workarounds is distinct from all four §4 modes, is operator-visible, and is arguably more expensive.
+
+### 11.3 Null result
+
+**No post-mortem in the corpus attributes an incident to over-engineering as its root cause.** Zero of 24. Over-abstraction appears in registers as a *decision avoided* (F3), never in a post-mortem as a *failure suffered*. Failure mode #1 in §4 is real as a tendency Simon corrects for, but it has not yet caused a recorded incident. E1 in §6 should be expected to come back weak.
+
+### 11.4 Observations (Q4, capped — recorded for a later pass, not chased)
+
+- **Minimum Machinery, discovered independently for governance.** `eftirmál_02` §6: *"**Deliberately not proposed: more roles, more clauses, more checks.** `eftirmál_01` produced eleven improvements and all eleven were built; the marginal one is worth less than the last."*
+- **Conversion tracking as the honesty measure.** `eftirmál_02` §7 tracks rows-created → rows-closed per matter: *"It is the only honest measure of the mechanism, and it is the one the operator asked for."* §6's evals could adopt this.
+- **Line numbers are the wrong citation unit.** `views-evaluation`: *"`Location` fields name files and symbols, not line numbers — line numbers drift as soon as anything is inserted above them."* The skills register cites line numbers throughout.
+- **Exit-state taxonomies vary widely** — `views-models` runs seven (Open / Mitigated / Resolved / Accepted / Partially Resolved / Subsumed / Merged); `views-appwrite` has live vs dormant; `views-baseline` has Withdrawn; `views-stepshifter` has Invalidated.
+- **`views-metric-lab/reports/technical_risk_register.md` is a byte-identical stale copy** of `views-lab00`'s, still titled "views-lab00".
+- **`views-hydranet/tests/test_risk_register_integrity.py`** and `views-datafactory`'s `test_falsification_merge_readiness.py` (an 8,000-char search-window guard) are mechanical register checks — the thing C-03 and C-14 say the skills repo lacks.
+
+### 11.5 Examined, not relevant
+
+`postmortem_epic_339` (scope-of-review lessons, cross-repo verification — relevant to review practice, not to `converge`) · `un_fao_delivery` pre/post-run pair · `pre_deploy_post_mortem` ×2 · `postmortem_cm_unmapped_gaul_cells` · `postmortem_training_nondeterminism_init_rng_drift` · `postmortem_locked_dropout_negative_result` · `postmortem_gated_zinbcore` · `09_postmortem_explosion_needs_rollout` · `postmortem_exp01_hard_gate_drops_escalations` · `11_postmortem` (target compression) · `post_mortem_multi_target_investigation` · `post_mortem_report` · `cramer_distance/POSTMORTEM.md` · `views-bayesian/meta/lessons_log.md` (template, near-empty) · `eftirmál_01` (superseded by `_02` for these questions).
+
+### 11.6 Coverage and honesty notes
+
+- 21 registers: headers read in full; bodies swept mechanically, not read. `views-datafactory`'s `register_changelog.md` and archive were **not** read — capped per Q4.
+- 24 post-mortems: 6 read in full, 18 classified by structure and root-cause sections. The plan said read all in full; this is a **logged cap**, not silent truncation. The 18 are all data/ML incident reports whose titles and root-cause headings were sufficient to classify for F2.
+- **Conflict of interest:** §§1–10 and this section have the same author. F1, F2, F3, F5 and the §11.3 null result all cut against the blueprint; they are reported because Q3 and verification step 5 exist to force the attempt. A reader should still weight this section as self-assessment.
+
+---
+
 ## Appendix A — the source document, verbatim
 
 Preserved exactly as pasted. This is the normative text; the CLAUDE.md digest is a derived summary of it.
