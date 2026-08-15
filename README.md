@@ -70,11 +70,6 @@ A collection of Claude Code skills for software engineering governance, strategi
 |-------|---------|
 | **graphify** | Turn any folder of files into a navigable knowledge graph with community detection and audit trail |
 
-### Utility
-
-| Skill | Purpose |
-|-------|---------|
-| **hello-world** | Demo skill for testing |
 
 ## Skill Seams — Responsibility Boundaries
 

@@ -1,6 +1,6 @@
 ---
 name: expert-code-review
-description: Provides multi-perspective engineering review of a codebase from 8 canonical expert viewpoints (Martin, GoF, Feathers, Nygard, Kleppmann, Ousterhout, Hickey, Beck) with failure mode analysis and long-term regret test. Use when user says "review this code", "critique the architecture", "evaluate this system", "assess code quality", "engineering review", or "what would Uncle Bob think". Do NOT use for repository mapping (use repo-assimilation), tech debt cleanup, bug fixes, or scaffolding.
+description: Provides multi-perspective engineering review of a codebase from 8 canonical expert viewpoints (Martin, GoF, Feathers, Nygard, Kleppmann, Ousterhout, Hickey, Beck) plus a Maintainer seat that judges sufficiency and removes findings not worth acting on, with failure mode analysis and long-term regret test. Use when user says "review this code", "critique the architecture", "evaluate this system", "assess code quality", "engineering review", or "what would Uncle Bob think". Do NOT use for repository mapping (use repo-assimilation), tech debt cleanup, bug fixes, or scaffolding.
 ---
 
 # Multi-Expert Engineering Review
@@ -30,7 +30,7 @@ When given a system description or codebase:
 1. Produce a short neutral system summary (3-5 sentences)
 2. Evaluate the system from each of 8 expert perspectives separately -- consult `references/experts.md` for evaluation criteria per expert
 3. For each expert: identify 2-4 strengths, 2-4 weaknesses/risks, and 1-3 concrete improvements (all with file/module references)
-4. Complete all 8 expert reviews before proceeding
+4. Complete all 8 expert reviews, then the Maintainer seat (`references/experts.md`), which speaks last and issues a sufficiency verdict, before proceeding
 5. Identify key disagreements between expert perspectives
 6. Perform failure mode analysis and long-term regret test -- consult `references/failure-modes.md` for categories and output format
 7. Produce a balanced engineering recommendation
@@ -47,6 +47,7 @@ When given a system description or codebase:
    - John Ousterhout Perspective
    - Rich Hickey Perspective
    - Kent Beck Perspective
+   - The Maintainer Perspective (sufficiency verdict; findings judged not worth acting on)
 3. Key Disagreements Between Experts
 4. Failure Mode Analysis
 5. Long-Term Regret Test

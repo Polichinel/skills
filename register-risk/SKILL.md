@@ -19,7 +19,7 @@ Follow these rules strictly.
 
 ## Purpose
 
-Single intake funnel for risk registration. All audit skills (expert-code-review, test-review, falsify, repo-assimilation, tech-debt-cleanup, clean-architecture-review, review-diff) produce findings that may warrant tracking. This skill is the controlled gate between "finding identified" and "finding tracked," enforcing deduplication, tier consistency, trigger quality, and causal linking.
+Single intake funnel for risk registration. All audit skills (expert-code-review, test-review, falsify, repo-assimilation, tech-debt-cleanup, review-diff) produce findings that may warrant tracking. This skill is the controlled gate between "finding identified" and "finding tracked," enforcing deduplication, tier consistency, trigger quality, and causal linking.
 
 ## Procedure
 

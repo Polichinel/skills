@@ -4,10 +4,10 @@
 |-------------------|--------------------------------------|
 | Project           | claude-code-skills                   |
 | Owner             | Polichinl (simmaa@prio.org)          |
-| Last Updated      | 2026-08-15                           |
+| Last Updated      | 2026-08-16                           |
 | Total Concerns    | 14                                   |
-| Open Concerns     | 13                                   |
-| Resolved Concerns | 1                                    |
+| Open Concerns     | 12                                   |
+| Resolved Concerns | 2                                    |
 
 ---
 
@@ -69,22 +69,6 @@ See also C-09 (C-02 is the extreme case of the flat-vs-split layout inconsistenc
 The repository contains no test, no CI workflow, and no validation script; the only executable artifact referenced anywhere (`scripts/validate_thing.sh`) lives outside the repo in `views_platform/þingit/`. Five invariants are cheaply and mechanically verifiable and none is checked: frontmatter validity across all 24 `SKILL.md` files, `references/` path resolution across 40 files, cross-skill name existence, external path availability, and README-to-filesystem consistency. Three of those five are already violated (C-01, C-04) and survived nine commits undetected. This is the root-cause entry for C-01, C-04, and C-05, which are its symptoms. It is also a self-application gap: `README.md:112` asserts "Testing is mandatory critical infrastructure," and `ship-it/SKILL.md` enforces `ruff` and `pytest` gates on target repositories while this repository has neither. Partially mitigated only within `thingit`, whose external 16-check validator demonstrates the pattern the rest of the repo lacks. Tier rationale: held at Tier 3 rather than raised to Tier 2 to avoid double-counting — the severity of this omission is already carried by the symptom entries C-01, C-04, and C-05, each tiered on its own consequence. Tier 3 reflects the residual risk of future undetected drift, not the sum of what it has already caused. Confirmed at Tier 3 during review-rr strategic review (2026-08-15).
 
 Root cause of C-01, C-04, and C-05. See also C-07 (resolved — uncommitted state would also be caught by a repository-state check, so it remains a candidate validator rule).
-
----
-
-### C-04: three referenced skills do not exist
-
-| Field | Value |
-|-------|-------|
-| ID | C-04 |
-| Tier | 3 |
-| Source | repo-assimilation (2026-08-15) |
-| Trigger | When someone follows a documented "use X instead" delegation to `clean-architecture-review`, `test-generation`, or `hello-world`, or writes a register entry using the `clean-architecture-review` Source value from `register-risk/references/schema.md:79`, the target skill is not installed. |
-| Location | `register-risk/SKILL.md:22`, `register-risk/references/schema.md:79`, `register-risk/references/phases.md:71,83`, `test-review/SKILL.md:3,24`, `README.md:77` |
-
-Three skill names are referenced as though installed and have no corresponding directory. `clean-architecture-review` appears four times across `register-risk`, including in the schema table of valid `Source` values, so this register's own vocabulary admits a source no installed skill can produce. `test-generation` appears in `test-review`'s **frontmatter description** — the text the Claude Code harness uses for dispatch — which is the most load-bearing position an incorrect name can occupy. `hello-world` is advertised in the README's public skill inventory. Because routing between skills is prose-only and never validated (see C-06), a dangling name is indistinguishable from a live one until invocation fails. Not currently mitigated.
-
-Symptom of C-03 (no cross-skill name validation). See also C-06 (same line, `register-risk/SKILL.md:22`, seam-drift aspect).
 
 ---
 
@@ -247,6 +231,16 @@ Detectable by the C-03 validator (ID uniqueness and count reconciliation are mec
 
 ## Resolved Concerns
 
+### C-04: three referenced skills do not exist — RESOLVED
+
+| Field | Value |
+|-------|-------|
+| ID | C-04 |
+| Resolved | 2026-08-16 |
+| Resolution | All seven dangling references removed: `clean-architecture-review` from `register-risk/SKILL.md:22`, `references/schema.md` (Source table row) and `references/phases.md` (×2); `test-generation` from `test-review/SKILL.md` frontmatter and body; `hello-world` and its Utility table from `README.md`. The register's own Conventions line was carrying the same stale Source value and was corrected too. Verified: zero references remain outside C-04's own entry. |
+
+---
+
 ### C-07: a complete skill and an edited skill are outside version control — RESOLVED
 
 | Field | Value |
@@ -260,7 +254,7 @@ Detectable by the C-03 validator (ID uniqueness and count reconciliation are mec
 ## Register Conventions
 
 - **ID format:** `C-xx` for concerns, `D-xx` for disagreements. IDs are permanent — gaps in numbering indicate merged or resolved entries
-- **Sources:** `repo-assimilation`, `expert-review`, `test-review`, `falsification-audit`, `clean-architecture-review`, `pr-review`, `tech-debt-audit`, `incident`, `manual`
+- **Sources:** `repo-assimilation`, `expert-review`, `test-review`, `falsification-audit`, `pr-review`, `tech-debt-audit`, `incident`, `manual`
 - **Resolution:** Move to "Resolved Concerns" with resolution date and summary when addressed
 - **Header counts:** Manually maintained — update whenever a concern is added or resolved
 - **Governed by:** ADR-001

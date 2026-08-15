@@ -1,6 +1,6 @@
 ---
 name: test-review
-description: Audits test coverage and quality from 5 expert perspectives (Beck, Feathers, Nygard, Kleppmann, Leveson) against CIC contracts and the red/beige/green test taxonomy. Use when user says "review the tests", "assess test coverage", "audit test quality", "test review", "are the tests good enough", or "check test alignment". Do NOT use for writing tests (use test-generation), for code review (use expert-code-review), or for documentation review (use review-base-docs).
+description: Audits test coverage and quality from 5 expert perspectives (Beck, Feathers, Nygard, Kleppmann, Leveson) against CIC contracts and the red/beige/green test taxonomy. Use when user says "review the tests", "assess test coverage", "audit test quality", "test review", "are the tests good enough", or "check test alignment". Do NOT use for writing tests, for code review (use expert-code-review), or for documentation review (use review-base-docs).
 ---
 
 # Test Review
@@ -21,7 +21,7 @@ Follow these rules strictly.
 
 ## Critical Constraint
 
-This skill is read-only. It produces an assessment report. It does not create, modify, or delete any files. All proposed tests are recommendations for the user to act on (or to feed into the test-generation skill).
+This skill is read-only. It produces an assessment report. It does not create, modify, or delete any files. All proposed tests are recommendations for the user to act on.
 
 ## Purpose
 
