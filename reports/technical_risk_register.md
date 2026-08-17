@@ -5,8 +5,8 @@
 | Project           | claude-code-skills                   |
 | Owner             | Polichinl (simmaa@prio.org)          |
 | Last Updated      | 2026-08-17                           |
-| Total Concerns    | 14                                   |
-| Open Concerns     | 10                                   |
+| Total Concerns    | 15                                   |
+| Open Concerns     | 11                                   |
 | Resolved Concerns | 4                                    |
 
 ---
@@ -23,6 +23,30 @@
 ---
 
 ## Open Concerns
+
+### C-15: the validator's strongest check runs nowhere by default, and it has two documented blind spots
+
+| Field | Value |
+|-------|-------|
+| ID | C-15 |
+| Tier | 3 |
+| Source | pr-review (2026-08-17) |
+| Trigger | When cloning this repository onto a new machine, run `bash scripts/install-hooks.sh` before trusting CI — without it the external-paths check, the only thing that catches C-01, executes in no automated place at all. |
+| Location | `.github/workflows/validate.yml` (`--skip external-paths`), `scripts/install-hooks.sh`, `scripts/validate_skills.py` (`check_skill_names` docstring, `prose_files` docstring, `KNOWN_NONSKILLS`) |
+
+`scripts/validate_skills.py` closes C-03, but three gaps are known and deliberate rather than accidental, and all three are the sort a future reader would otherwise assume away.
+
+**Enforcement.** external-paths resolves `~/brain/...`, which exists only on this machine, so CI skips it. It is enforced by a pre-push hook that must be installed per clone. A fresh clone has full CI and zero protection against C-01 recurring.
+
+**Detection — bare prose.** `check_skill_names` matches backticked and slash-command forms. Two of C-04's four historical sites were bare mentions in running prose and are not detected. Proximity-based detection was attempted and withdrawn: it false-positived on ordinary hyphenated adjectives (`whole-codebase`, `version-controlled`, `large-scale`), each needing another filter, which is guard accumulation ending in a check nobody trusts.
+
+**Detection — `reports/`.** Excluded from prose checks. The reason is structural, not convenience: a register that tracks dangling-name concerns necessarily contains dangling names. Section-aware scanning was tried — skipping Resolved Concerns still leaves hits in *open* entries, including this one, because open entries discuss the same history. The cost is real: the stale `clean-architecture-review` Source value fixed by hand in this change lived in `reports/`, so a recurrence there would go unseen.
+
+Tier 3 rather than 2: every gap degrades to a loud failure at invocation rather than silent corruption — a broken `base_docs` path stops `init-base-docs` at Phase 1, it does not produce a wrong governance tree. The cost is rediscovery by hand, which is what C-01 and C-04 already cost once.
+
+See also C-14 (prose-only invariants failing silently — same family, different artifact).
+
+---
 
 
 ### C-02: graphify embeds an 800-line program that auto-installs a package and drifts from its pinned version
@@ -207,7 +231,7 @@ Detectable by the C-03 validator (ID uniqueness and count reconciliation are mec
 |-------|-------|
 | ID | C-01 |
 | Resolved | 2026-08-17 |
-| Resolution | Path corrected to `~/brain/5_system/templates/base_docs` in both `init-base-docs/references/phases.md:5` and `adopt-base-docs/references/phases.md:5`. Canonical copy confirmed by checking all six artifacts the skills require (`ADRs/`, `CICs/`, `contributor_protocols/`, `standards/`, `INSTANTIATION_CHECKLIST.md`, `validate_docs.sh`) — all present in `5_system`, only the first two in the `claude_learning` copy, which is now named in the text as a known-incomplete decoy. Recurrence is caught by `scripts/validate_skills.py` (external-paths check), mutation-tested. |
+| Resolution | Path corrected to `~/brain/5_system/templates/base_docs` in both `init-base-docs/references/phases.md:5` and `adopt-base-docs/references/phases.md:5`. Canonical copy confirmed by checking all six artifacts the skills require (`ADRs/`, `CICs/`, `contributor_protocols/`, `standards/`, `INSTANTIATION_CHECKLIST.md`, `validate_docs.sh`) — all present in `5_system`, only the first two in the `claude_learning` copy, which is now named in the text as a known-incomplete decoy. Recurrence is caught by `scripts/validate_skills.py` (external-paths check), mutation-tested — but **that check cannot run in CI**, because it resolves `~/brain/...` which exists only on this machine. It is enforced by the pre-push hook (`scripts/install-hooks.sh`), which must be installed per clone. On a machine without the hook, nothing catches this. |
 
 ---
 
@@ -217,7 +241,7 @@ Detectable by the C-03 validator (ID uniqueness and count reconciliation are mec
 |-------|-------|
 | ID | C-03 |
 | Resolved | 2026-08-17 |
-| Resolution | `scripts/validate_skills.py` checks all five invariants this entry named: frontmatter validity, `references/` path resolution, cross-skill name existence, external path availability, README-to-filesystem consistency. Wired to `.github/workflows/validate.yml`; external-paths is reported but not enforced in CI because `~/brain/...` exists only on the author's machine. Mutation-tested against both historical failures — reintroducing C-01's path and C-04's dangling name are each caught. First run found three live defects: two unqualified `references/schema.md` paths and three installed skills missing from the README. |
+| Resolution | `scripts/validate_skills.py` checks all five invariants this entry named: frontmatter validity, `references/` path resolution, cross-skill name existence, external path availability, README-to-filesystem consistency. Wired to `.github/workflows/validate.yml`; external-paths is reported but not enforced in CI because `~/brain/...` exists only on the author's machine. Mutation-tested. C-01's path is caught. C-04 is caught in its backticked, table-row and slash-command forms — **not** in bare running prose, which was two of its four historical sites; earlier attempts at prose detection false-positived on ordinary hyphenated adjectives and were withdrawn rather than grown into a filter list nobody trusts. First run found three live defects: two unqualified `references/schema.md` paths and three installed skills missing from the README. |
 
 ---
 
