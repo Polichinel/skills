@@ -1,0 +1,30 @@
+name: validate
+
+# Closes C-03. Three of the five invariants were violated and survived nine commits
+# undetected; C-01 and C-04 were then found by hand. This makes that structural.
+
+on:
+  push:
+    branches: [main, development]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  skills:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # One step, and the exit code decides. An earlier version ran the script twice and
+      # parsed its stdout for "FAIL" — which meant a crashed, deleted or renamed script
+      # produced empty stdout, no matches, and a green build. A guard that silently stops
+      # guarding is worse than no guard.
+      #
+      # external-paths is skipped here, not ignored: it resolves ~/brain/... which exists
+      # only on the author's machine. It is the check that catches C-01, so it is enforced
+      # locally by the pre-push hook (scripts/install-hooks.sh) rather than in CI.
+      - name: Validate skills collection
+        run: python3 scripts/validate_skills.py --skip external-paths

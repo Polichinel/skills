@@ -68,7 +68,7 @@ If not found:
 ## Register Conventions
 
 - **ID format:** `C-xx` for concerns, `D-xx` for disagreements. IDs are permanent — gaps in numbering indicate merged or resolved entries
-- **Sources:** `repo-assimilation`, `expert-review`, `test-review`, `falsification-audit`, `clean-architecture-review`, `pr-review`, `tech-debt-audit`, `incident`
+- **Sources:** `repo-assimilation`, `expert-review`, `test-review`, `falsification-audit`, `pr-review`, `tech-debt-audit`, `incident`
 - **Resolution:** Move to "Resolved Concerns" with resolution date and summary when addressed
 - **Header counts:** Manually maintained — update whenever a concern is added or resolved
 - **Governed by:** [ADR number]
@@ -80,7 +80,7 @@ If not found:
 
 Collect risks from the current conversation context. Valid sources:
 
-1. **Audit skill output:** Findings from expert-code-review, test-review, falsify, repo-assimilation, tech-debt-cleanup, or clean-architecture-review that appeared earlier in this conversation
+1. **Audit skill output:** Findings from expert-code-review, test-review, falsify, repo-assimilation, or tech-debt-cleanup that appeared earlier in this conversation
 2. **User-stated risks:** The user explicitly describes a risk or concern
 3. **Prior analysis:** Code analysis performed earlier in this conversation that identified issues
 

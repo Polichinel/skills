@@ -56,7 +56,7 @@ Format Phase 7 risks in register-compatible format (ID, tier, trigger, source, l
 
 ## Performance Notes
 
-- Take your time to do this thoroughly
-- Quality is more important than speed
-- Do not skip phases or combine them
-- Do not skip validation steps
+- Do not skip phases or combine them. Do not skip validation steps.
+- **The output is a mental model, not a catalogue.** Length is not thoroughness. If a phase can be stated in three sentences, state it in three sentences.
+- **Do not cap what you find. Order it.** Report every risk you have evidence for — the cost of a missed risk is unbounded and unknowable, while the cost of a low one is a line someone skims. Rank them so that anything which would change what a maintainer does comes first. Reducing detection is the wrong lever; ordering it is the right one.
+- Assimilation is the front door to `adopt-base-docs` and `register-risk`. Everything you emit here becomes something a person must read later, possibly for years. Emit accordingly.

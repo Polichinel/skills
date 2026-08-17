@@ -2,9 +2,13 @@
 
 ## Phase 1 -- Locate Base Docs
 
-Check `~/brain/8_system/templates/base_docs` for the template directory.
+Check `~/brain/5_system/templates/base_docs` for the template directory.
 
-If not found, ask the user for the path. Do not guess.
+If not found, ask the user for the path. Do not guess — a partial copy exists at
+`~/Documents/scripts/claude_learning/base_docs` holding only `ADRs/` and `CICs/`. It is
+missing `contributor_protocols/`, `standards/`, `validate_docs.sh` and
+`INSTANTIATION_CHECKLIST.md`, so using it would silently produce an incomplete
+governance tree.
 
 Validate the directory contains:
 - `ADRs/` with `README.md`, `adr_template.md`, and constitutional ADRs (000-009)
@@ -146,7 +150,7 @@ Use the `register-risk` skill to create an empty technical risk register and its
 ### Register creation
 
 Invoke `register-risk` with no findings (greenfield project has no risks yet). The `register-risk` skill will:
-- Create `reports/technical_risk_register.md` using its canonical template (from `references/schema.md`)
+- Create `reports/technical_risk_register.md` using its canonical template (from `register-risk/references/schema.md`)
 - Create the governing ADR (number follows the last constitutional ADR)
 
 The canonical template includes:

@@ -76,7 +76,6 @@ The audit skill or activity that produced the finding. Valid values:
 | `expert-review` | expert-code-review |
 | `test-review` | test-review |
 | `falsification-audit` | falsify |
-| `clean-architecture-review` | expert-code-review (Clean Architecture focused) |
 | `tech-debt-audit` | tech-debt-cleanup |
 | `pr-review` | review-diff or external PR review |
 | `incident` | Production incident or operational failure |

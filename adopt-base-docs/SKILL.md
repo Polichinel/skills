@@ -80,5 +80,6 @@ Before reporting success, verify:
 
 - Phase 2 requires prior repo-assimilation output. Do not proceed without it.
 - Phase 4 (Map Ontology) is the highest-value creative work. This is where code becomes governance.
-- Write CICs for all confirmed non-trivial classes. Each CIC should reference actual methods, tests, and known deviations.
-- Honest incompleteness is better than fabricated completeness.
+- Write CICs for the classes that carry contracts someone could violate. "Non-trivial" is not a volume target — a CIC for a class nobody could misuse is prose a maintainer must read for no return.
+- Honest incompleteness is better than fabricated completeness, and both are better than completeness nobody reads.
+- **Every document written here is read by a human later, possibly for years.** Retrofitting governance onto a repo raises the ratio of prose-about-code to code. Keep that ratio in view: if the docs you are about to write would outweigh the module they govern, write less.

@@ -32,6 +32,8 @@ A collection of Claude Code skills for software engineering governance, strategi
 | **writing-harness** | Initialize the artifact substrate for strategic documents (DECISIONS.md, FINDINGS.md, MANIFESTO.md, anchors/, failure mode catalog) |
 | **strategic-draft** | Collaborative document drafting through structured Q&A with green/red spectrum tracking, three-question mechanism, and full harness artifact management |
 | **review-harness** | Sync harness artifacts against the current document (update stale statuses) or prioritize what to work on next |
+| **persona-critique** | Multi-persona critique of a draft: domain panels, craft personas, and a bespoke Scout |
+| **verify-sources** | Verify every citation against local source PDFs; maintains a citation ledger |
 
 **How to use:** The writing skills share an artifact harness (`_dev_materials/<document>/`) that tracks decisions, findings, manifesto entries, and precision anchors across sessions.
 
@@ -64,17 +66,18 @@ A collection of Claude Code skills for software engineering governance, strategi
 | **tech-debt-cleanup** | Structured identification and safe cleanup of technical debt |
 | **autoresearch** | Autonomous experiment loop to optimize a single metric |
 
+### Coordination
+
+| Skill | Purpose |
+|-------|---------|
+| **thingit** | Run a þing — the cross-repo deliberation protocol for decisions spanning repositories |
+
 ### Knowledge Graphs
 
 | Skill | Purpose |
 |-------|---------|
 | **graphify** | Turn any folder of files into a navigable knowledge graph with community detection and audit trail |
 
-### Utility
-
-| Skill | Purpose |
-|-------|---------|
-| **hello-world** | Demo skill for testing |
 
 ## Skill Seams — Responsibility Boundaries
 

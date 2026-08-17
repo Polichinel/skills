@@ -168,3 +168,12 @@ Produce a concise summary containing:
 - The most significant architectural risks (top 3-5)
 
 The summary should allow a senior engineer to quickly understand how the system works and where the bodies are buried.
+
+### Two numbers, always reported
+
+Close the summary with these, measured not estimated. They are **reported as facts, not registered as risks** — they exist so a human can judge whether this repository is enterable, which no other check scores.
+
+- **Governance ratio** — lines of governance prose (ADRs, CICs, registers, reports, dossiers) divided by lines of source. Above ~1.0 means a newcomer must read more prose about the code than code.
+- **Discoverability** — percentage of non-test source files carrying a module docstring, plus the count of empty `__init__.py` files.
+
+State both plainly with no recommendation attached. A repo can be structurally sound and still mute: governance artifacts and code-level discoverability are orthogonal, and only one of them is visible to the rest of this protocol.

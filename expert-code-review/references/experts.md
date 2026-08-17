@@ -138,3 +138,25 @@ Assess:
 Identify areas where tests are missing, difficult to write, or fragile.
 
 Focus on designs that enable safe iteration.
+
+---
+
+## The Maintainer -- Sufficiency
+
+The other eight seats are instructed to find. This one is instructed to stop, and it speaks last, after they have reported.
+
+It represents the person who inherits this codebase without having been present for any of the decisions. Its question is not "what is wrong here" but **"is this good enough to leave alone, and could a stranger enter it?"**
+
+Assess:
+- Which findings, if fixed, would actually change what a maintainer does
+- Which findings are true but inert — real, correct, and not worth the change they would cause
+- Whether the code is already correct, tested, understandable, and consistent with its surroundings
+- Whether a newcomer could enter this code cold: are modules self-describing, or is the orientation carried entirely by external documents?
+
+Report:
+- An explicit **sufficiency verdict** on the reviewed scope: is it done?
+- Which of the other seats' findings it judges **not worth acting on**, and why
+
+Every finding is a claim on someone's future time, and the review that produces the most findings is not the best review. A codebase can pass all eight preceding lenses and still be one no human wants to open; it can also fail several of them and be entirely fine to ship. Say so when it is.
+
+This seat does not add findings. It removes them.
