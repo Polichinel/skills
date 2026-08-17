@@ -329,7 +329,27 @@ Concentration does not predict divergence, and it points the wrong way at the ex
 
 **What survives:** the textual contrast is real and unretracted — postprocessing's entries measure before and after and close with "the fix is one loop", hydranet's prescribe a validator; `config_initializer.py` did go 303 → 1,167 lines and 17 → 111 validators; and the C-98/C-105 → C-260 chain is a documented case of a resolution causing the next concern. Treadmill rate per 100 resolutions is directionally consistent (hydranet 4.7, faoapi 7.7 → diverging; postprocessing 0.7, datafactory 0.8 → converging) but noisy, and close to tautological.
 
-**What does not survive:** the claim that *where the fix lands* explains convergence. Q4 therefore remains open. Three explanations have now been tested and failed — attention, ownership, guard concentration. The honest position is that nothing yet accounts for why `views-postprocessing` holds flat.
+**What does not survive:** the claim that *where the fix lands* explains convergence.
+
+**F9b — resolved 2026-08-17, after three further failed hypotheses.** Source growth as a *ratio* (H4), concern provenance (H5) and resolution latency (H6) were each tested and each failed — H6 backwards: hydranet resolves **faster** than postprocessing (median 1 day vs 2, 42% same-day vs 32%). hydranet also resolved **152** concerns to postprocessing's 78. It is not less disciplined; it is more productive at closing and still loses.
+
+The variable that survives is **absolute new code**:
+
+| | LOC added Apr–Aug | arrivals | resolved | net open/wk |
+|---|---:|---:|---:|---:|
+| hydranet | 17,708 | 280 | 152 (54%) | +6.8 |
+| faoapi | 6,089 | 151 | 105 (70%) | +3.9 |
+| baseline | 1,616 | 35 | 22 (63%) | +1.0 |
+| postprocessing | 930 | 78 | 78 (**100%**) | 0.0 |
+| frames | 770 | 43 | 30 (70%) | +2.3 |
+
+Spearman ρ = **+0.70** between LOC added and net divergence (n=5, p≈0.2 — suggestive, not significant). hydranet takes in 2.14 concerns/day against postprocessing's 1.05.
+
+**Simon's original explanation was right and this investigation falsified it with the wrong proxy.** §11.1 measured "attention" as register-commits ÷ code-commits — a *ratio*, which normalises away the very thing that matters: how much new surface is being created. Deadline-driven building produces code; code produces concerns.
+
+**The consequence is a reframe, not a fix.** A register that diverges during a build phase is the expected signature of building, not a governance failure. The diagnostic question is not "is it rising" but "does it drain once the code stabilises". Nothing here is repairable by resolving faster or by better remedies — both were tested and both are already better in the diverging repo.
+
+**The uncomfortable residual:** postprocessing generates **83.9 concerns per 1,000 new lines against hydranet's 15.8** — 5× the scrutiny density. If hydranet were examined at postprocessing's rate it would hold roughly 1,400 concerns, not 280. That cuts directly at Simon's unknown-unknowns worry, and it means the divergence measured here may be an undercount rather than an excess.
 
 ### 11.3 Null result
 
