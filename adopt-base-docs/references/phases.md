@@ -2,9 +2,13 @@
 
 ## Phase 1 -- Locate Base Docs
 
-Check `~/brain/8_system/templates/base_docs` for the template directory.
+Check `~/brain/5_system/templates/base_docs` for the template directory.
 
-If not found, ask the user for the path. Do not guess.
+If not found, ask the user for the path. Do not guess — a partial copy exists at
+`~/Documents/scripts/claude_learning/base_docs` holding only `ADRs/` and `CICs/`. It is
+missing `contributor_protocols/`, `standards/`, `validate_docs.sh` and
+`INSTANTIATION_CHECKLIST.md`, so using it would silently produce an incomplete
+governance tree.
 
 Validate the directory contains:
 - `ADRs/` with `README.md`, `adr_template.md`, and constitutional ADRs (000-009)
@@ -235,7 +239,7 @@ Use the `register-risk` skill to create and seed the technical risk register.
 ### Register creation
 
 Invoke `register-risk` with the Technical Risk Inventory from Phase 2 (repo-assimilation output) as context. The `register-risk` skill will:
-- Create `reports/technical_risk_register.md` if it doesn't exist (using its canonical template from `references/schema.md`)
+- Create `reports/technical_risk_register.md` if it doesn't exist (using its canonical template from `register-risk/references/schema.md`)
 - Create the governing ADR (number follows the last constitutional ADR)
 - Register each risk with sequential IDs, validated tiers, and actionable triggers
 - Set source to "repo-assimilation" for all seeded entries

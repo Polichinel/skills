@@ -4,10 +4,10 @@
 |-------------------|--------------------------------------|
 | Project           | claude-code-skills                   |
 | Owner             | Polichinl (simmaa@prio.org)          |
-| Last Updated      | 2026-08-16                           |
+| Last Updated      | 2026-08-17                           |
 | Total Concerns    | 14                                   |
-| Open Concerns     | 12                                   |
-| Resolved Concerns | 2                                    |
+| Open Concerns     | 10                                   |
+| Resolved Concerns | 4                                    |
 
 ---
 
@@ -24,21 +24,6 @@
 
 ## Open Concerns
 
-### C-01: base_docs template path points at a renumbered vault directory
-
-| Field | Value |
-|-------|-------|
-| ID | C-01 |
-| Tier | 2 |
-| Source | repo-assimilation (2026-08-15) |
-| Trigger | When someone invokes `/init-base-docs` or `/adopt-base-docs` on any project, Phase 1 "Locate Base Docs" fails — verify the path at `references/phases.md:5` resolves, and pick between the two candidate template copies, before running. |
-| Location | `init-base-docs/references/phases.md:5`, `adopt-base-docs/references/phases.md:5` |
-
-Both skills instruct "Check `~/brain/8_system/templates/base_docs` for the template directory." `/home/simon/brain/8_system/` does not exist; a filesystem search locates the templates at `/home/simon/brain/5_system/templates/base_docs`, with a second copy at `/home/simon/Documents/scripts/claude_learning/base_docs`. The brain vault was renumbered without updating the two skills that depend on it. Phase 1 of both skills is entirely "Locate Base Docs — Find and validate the base_docs template directory," so the failure is loud rather than silent — but no fallback path is specified and there are now two candidate sources with no stated precedence, so a recovering operator must guess which is canonical. Both governance-bootstrap skills are non-functional as written. Not currently mitigated; no skill validates its external paths before use except `thingit`. Tier rationale: Tier 2 rests on near-certain likelihood rather than on severity — the failure is loud and the fix is a one-line path edit, which makes this the least severe of the three Tier 2 entries. C-02 and C-08 sit at the same tier on the opposite basis: lower likelihood, silent failure. Confirmed at Tier 2 during review-rr strategic review (2026-08-15).
-
-See also C-03 (shared root cause: no mechanical validation of external paths) and C-05 (same class of external-path assumption).
-
----
 
 ### C-02: graphify embeds an 800-line program that auto-installs a package and drifts from its pinned version
 
@@ -56,21 +41,6 @@ See also C-09 (C-02 is the extreme case of the flat-vs-split layout inconsistenc
 
 ---
 
-### C-03: no validation infrastructure of any kind
-
-| Field | Value |
-|-------|-------|
-| ID | C-03 |
-| Tier | 3 |
-| Source | repo-assimilation (2026-08-15) |
-| Trigger | When someone renames a skill directory, renames a `references/*.md` file, or changes an external path in a `SKILL.md`, manually re-check that every reference path, cross-skill name, and external path still resolves — no script does this. |
-| Location | Repository root — absence of `.github/`, of any `.sh`/`.py`/`.yml`/`.toml` file, of any test |
-
-The repository contains no test, no CI workflow, and no validation script; the only executable artifact referenced anywhere (`scripts/validate_thing.sh`) lives outside the repo in `views_platform/þingit/`. Five invariants are cheaply and mechanically verifiable and none is checked: frontmatter validity across all 24 `SKILL.md` files, `references/` path resolution across 40 files, cross-skill name existence, external path availability, and README-to-filesystem consistency. Three of those five are already violated (C-01, C-04) and survived nine commits undetected. This is the root-cause entry for C-01, C-04, and C-05, which are its symptoms. It is also a self-application gap: `README.md:112` asserts "Testing is mandatory critical infrastructure," and `ship-it/SKILL.md` enforces `ruff` and `pytest` gates on target repositories while this repository has neither. Partially mitigated only within `thingit`, whose external 16-check validator demonstrates the pattern the rest of the repo lacks. Tier rationale: held at Tier 3 rather than raised to Tier 2 to avoid double-counting — the severity of this omission is already carried by the symptom entries C-01, C-04, and C-05, each tiered on its own consequence. Tier 3 reflects the residual risk of future undetected drift, not the sum of what it has already caused. Confirmed at Tier 3 during review-rr strategic review (2026-08-15).
-
-Root cause of C-01, C-04, and C-05. See also C-07 (resolved — uncommitted state would also be caught by a repository-state check, so it remains a candidate validator rule).
-
----
 
 ### C-05: single-user absolute paths hardcoded across five skills
 
@@ -230,6 +200,26 @@ Detectable by the C-03 validator (ID uniqueness and count reconciliation are mec
 ---
 
 ## Resolved Concerns
+
+### C-01: base_docs template path points at a renumbered vault directory — RESOLVED
+
+| Field | Value |
+|-------|-------|
+| ID | C-01 |
+| Resolved | 2026-08-17 |
+| Resolution | Path corrected to `~/brain/5_system/templates/base_docs` in both `init-base-docs/references/phases.md:5` and `adopt-base-docs/references/phases.md:5`. Canonical copy confirmed by checking all six artifacts the skills require (`ADRs/`, `CICs/`, `contributor_protocols/`, `standards/`, `INSTANTIATION_CHECKLIST.md`, `validate_docs.sh`) — all present in `5_system`, only the first two in the `claude_learning` copy, which is now named in the text as a known-incomplete decoy. Recurrence is caught by `scripts/validate_skills.py` (external-paths check), mutation-tested. |
+
+---
+
+### C-03: no validation infrastructure of any kind — RESOLVED
+
+| Field | Value |
+|-------|-------|
+| ID | C-03 |
+| Resolved | 2026-08-17 |
+| Resolution | `scripts/validate_skills.py` checks all five invariants this entry named: frontmatter validity, `references/` path resolution, cross-skill name existence, external path availability, README-to-filesystem consistency. Wired to `.github/workflows/validate.yml`; external-paths is reported but not enforced in CI because `~/brain/...` exists only on the author's machine. Mutation-tested against both historical failures — reintroducing C-01's path and C-04's dangling name are each caught. First run found three live defects: two unqualified `references/schema.md` paths and three installed skills missing from the README. |
+
+---
 
 ### C-04: three referenced skills do not exist — RESOLVED
 

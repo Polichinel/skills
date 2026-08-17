@@ -1,0 +1,39 @@
+name: validate
+
+# Closes C-03. Three of the five invariants below were violated and survived nine
+# commits undetected; C-01 and C-04 were then found by hand. This makes that structural.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  skills:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Validate skills collection
+        # External paths (~/brain/...) exist only on the author's machine, so that
+        # check cannot pass in CI. It is the one that catches C-01, so it still runs
+        # locally and in the pre-commit hook — it is reported here but not enforced.
+        run: python3 scripts/validate_skills.py || true
+      - name: Enforce machine-independent checks
+        run: |
+          python3 - <<'EOF'
+          import subprocess, sys
+          out = subprocess.run([sys.executable, "scripts/validate_skills.py"],
+                               capture_output=True, text=True).stdout
+          fatal = [l for l in out.splitlines()
+                   if l.startswith("FAIL") and "external-paths" not in l]
+          print(out)
+          if fatal:
+              print("\nFailing on machine-independent checks:")
+              for f in fatal:
+                  print(" ", f)
+              sys.exit(1)
+          EOF
