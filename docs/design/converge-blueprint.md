@@ -114,6 +114,7 @@ Carries only operative rules, no exposition:
 - Direct Representation — small distance between what code means and what it does
 - Explicit State — no hidden globals, magic discovery, implicit mutation
 - Scope discipline — smallest coherent change; note larger problems rather than expanding
+- **Remedy proportionality — a fix earns its overhead the way an abstraction does.** Measure before fixing; the diagnosis usually names one cause when there are three. Then prefer the bounded local change over a permanent guard in a shared file. A guard is never free: it enlarges the surface every later change must satisfy, and it reliably generates concerns about itself. State what the fix leaves unproven. *(The only empirically grounded rule here — see §11.2 F9.)*
 - The stop condition
 - SOLID and the component principles, explicitly flagged as heuristics, with the "do not introduce interfaces/factories/DI merely to demonstrate these" clause
 - Repository should scream what it does; no `utils`/`helpers`/`common` dumping grounds
@@ -304,6 +305,16 @@ Two independent occurrences:
 - `postmortem_pgm_forecast_stripe_grid_id_leak.md` §7: *"**First diagnosis was wrong: blamed the plotting tool.** … That was confidently stated and **wrong**."*
 
 Confident wrong diagnosis followed by escalating workarounds is distinct from all four §4 modes, is operator-visible, and is arguably more expensive.
+
+**F9 — EXPLAINS the divergence. Added 2026-08-17. See `where_fixes_land.png`.** *The remedy compounds; the finding does not.*
+Comparing how 80 resolved concerns were closed in `views-postprocessing` against 152 in `views-hydranet` — the only two repos with comparable size, tooling and committer, and opposite outcomes:
+
+- **hydranet closes by adding a guard to a shared file.** `config_initializer.py` went **303 → 1,167 lines** and **17 → 111 validators** Apr–Aug, citing 20 concern IDs in its own comments; 80 concern IDs appear across 32 source files.
+- **postprocessing closes by measuring, changing one thing, and adding no permanent guard.** Its largest module went 275 → 397 lines and its raise count fell **7 → 5** while 80 concerns were resolved. A representative entry opens *"Measured before anything was changed"*, reports 3.06× → 1.13×, and concludes *"The fix is one loop."*
+
+The loop is documented in hydranet's own register: C-98 and C-105 were closed with a set-based warning, and C-260 was later opened **because** that warning passed same-length-different-order. The register puts *"resolution"* in scare quotes at that point. Treadmill signals across both registers: **hydranet 10, postprocessing 1.**
+
+This answers Q4 — whether remediation generates work — which was earlier reported as insufficient data. It does, but only in the guard-adding mode. Neither attention (§11.1) nor ownership explains the divergence; where the fix lands does. **n=2 repos: a strong lead, not a law.**
 
 ### 11.3 Null result
 
