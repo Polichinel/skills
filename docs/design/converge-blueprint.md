@@ -114,7 +114,7 @@ Carries only operative rules, no exposition:
 - Direct Representation — small distance between what code means and what it does
 - Explicit State — no hidden globals, magic discovery, implicit mutation
 - Scope discipline — smallest coherent change; note larger problems rather than expanding
-- **Remedy proportionality — a fix earns its overhead the way an abstraction does.** Measure before fixing; the diagnosis usually names one cause when there are three. Then prefer the bounded local change over a permanent guard in a shared file. A guard is never free: it enlarges the surface every later change must satisfy, and it reliably generates concerns about itself. State what the fix leaves unproven. *(The only empirically grounded rule here — see §11.2 F9.)*
+- **Remedy proportionality — a fix earns its overhead the way an abstraction does.** Measure before fixing; the diagnosis usually names one cause when there are three. Then prefer the bounded local change over a permanent guard in a shared file. A guard is never free: it enlarges the surface every later change must satisfy, and it reliably generates concerns about itself. State what the fix leaves unproven. *(Good practice, and visible in the resolution style of the one repo that converges — but §11.2 F9 records that it failed as a general explanation when tested on a third repo. Keep it as a heuristic; do not claim it as a mechanism.)*
 - The stop condition
 - SOLID and the component principles, explicitly flagged as heuristics, with the "do not introduce interfaces/factories/DI merely to demonstrate these" clause
 - Repository should scream what it does; no `utils`/`helpers`/`common` dumping grounds
@@ -314,7 +314,22 @@ Comparing how 80 resolved concerns were closed in `views-postprocessing` against
 
 The loop is documented in hydranet's own register: C-98 and C-105 were closed with a set-based warning, and C-260 was later opened **because** that warning passed same-length-different-order. The register puts *"resolution"* in scare quotes at that point. Treadmill signals across both registers: **hydranet 10, postprocessing 1.**
 
-This answers Q4 — whether remediation generates work — which was earlier reported as insufficient data. It does, but only in the guard-adding mode. Neither attention (§11.1) nor ownership explains the divergence; where the fix lands does. **n=2 repos: a strong lead, not a law.**
+**FALSIFIED ON TEST, 2026-08-17.** The mechanism above was pre-registered and tested on a third repo, `views-datafactory` (the most converged register on the platform, 304/349). It did not survive:
+
+| | guard concentration (top file's share of concern IDs) | outcome |
+|---|---:|---|
+| views-postprocessing | **17%** — the highest | converges |
+| views-baseline | 17% | +1.0/wk |
+| views-faoapi | 13% | +3.9/wk |
+| views-hydranet | 11% | +6.8/wk |
+| views-datafactory | 8% | converges |
+| views-frames | 8% | +2.3/wk |
+
+Concentration does not predict divergence, and it points the wrong way at the extremes: the converging repo has the most concentrated guards. `views-datafactory` also carries **126 concern IDs across 109 files** — more markers than hydranet's 80 across 32 — while converging.
+
+**What survives:** the textual contrast is real and unretracted — postprocessing's entries measure before and after and close with "the fix is one loop", hydranet's prescribe a validator; `config_initializer.py` did go 303 → 1,167 lines and 17 → 111 validators; and the C-98/C-105 → C-260 chain is a documented case of a resolution causing the next concern. Treadmill rate per 100 resolutions is directionally consistent (hydranet 4.7, faoapi 7.7 → diverging; postprocessing 0.7, datafactory 0.8 → converging) but noisy, and close to tautological.
+
+**What does not survive:** the claim that *where the fix lands* explains convergence. Q4 therefore remains open. Three explanations have now been tested and failed — attention, ownership, guard concentration. The honest position is that nothing yet accounts for why `views-postprocessing` holds flat.
 
 ### 11.3 Null result
 
