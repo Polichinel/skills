@@ -58,5 +58,5 @@ Format Phase 7 risks in register-compatible format (ID, tier, trigger, source, l
 
 - Do not skip phases or combine them. Do not skip validation steps.
 - **The output is a mental model, not a catalogue.** Length is not thoroughness. If a phase can be stated in three sentences, state it in three sentences.
-- **Phase 7 is capped at 10 risks.** If more survive, report the 10 that most change what a maintainer would do and list the rest by title. An uncapped risk list transfers the reading cost to a human who has less context than you.
+- **Do not cap what you find. Order it.** Report every risk you have evidence for — the cost of a missed risk is unbounded and unknowable, while the cost of a low one is a line someone skims. Rank them so that anything which would change what a maintainer does comes first. Reducing detection is the wrong lever; ordering it is the right one.
 - Assimilation is the front door to `adopt-base-docs` and `register-risk`. Everything you emit here becomes something a person must read later, possibly for years. Emit accordingly.
