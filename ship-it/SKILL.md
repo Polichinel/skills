@@ -1,6 +1,6 @@
 ---
 name: ship-it
-description: Validates and ships local changes through a gated pipeline of linting (ruff), testing (pytest), staging, committing, and pushing. Use when user says "ship it", "commit and push", "push my changes", "finalize changes", "land this", or "ship my work". Do NOT use for code review, refactoring, running tests in isolation, or deploying to production.
+description: Validates and ships local changes through a gated pipeline of linting (ruff), import contracts (lint-imports, only where a repo declares them), testing (pytest), staging, committing, and pushing. Use when user says "ship it", "commit and push", "push my changes", "finalize changes", "land this", or "ship my work". Do NOT use for code review, refactoring, running tests in isolation, or deploying to production.
 ---
 
 # Ship It
@@ -25,6 +25,24 @@ Execute these steps sequentially. Each step gates the next.
 Run `ruff check .`
 
 If lint errors exist: **STOP**. Report the errors. Do not proceed.
+
+### Step 1.5 — Import contracts (only if the repo declares them)
+
+Check whether `pyproject.toml` contains a `[tool.importlinter]` section.
+
+**If it does not: skip this step silently.** Say nothing. Most repos have no contract, and
+a gate that announces itself doing nothing is noise.
+
+**If it does:** run `lint-imports` (`uv run lint-imports` or `poetry run lint-imports`,
+matching how the repo runs its other tools).
+
+If any contract is broken: **STOP**. Report the contract name and the exact import chain
+the tool names. Do not proceed.
+
+Why this sits between lint and test: a broken contract is an architecture violation, not a
+test failure, and it is cheaper to see before the suite runs. CI enforces the same thing —
+without this step a repo can ship a violation locally and only learn about it from a red
+build after the push.
 
 ### Step 2 — Test
 

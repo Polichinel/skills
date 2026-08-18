@@ -153,7 +153,7 @@ KNOWN_NONSKILLS = {
     "autoresearch-survey", "base-docs", "behavior-neutral", "claude-code", "code-review",
     "credit-war", "cross-repo", "data-readiness", "design-preferences", "end-to-end",
     "expert-review", "fail-loud", "failure-modes", "falsification-audit", "forecast-hub",
-    "front-matter", "graphify-out", "half-open", "house-style", "import-linter",
+    "front-matter", "graphify-out", "half-open", "house-style", "import-linter", "lint-imports",
     "karpathy-autoresearch-explained", "karpathy-pattern", "kebab-case", "metric-validity",
     "multi-expert", "my-project", "no-inference", "no-silent-clamp", "one-liner", "opt-in",
     "output-styles", "path-scoped", "pr-review", "pre-commit", "proxy-divergent",
@@ -227,12 +227,30 @@ def check_readme(skills: list[Path]) -> list[str]:
     return bad
 
 
+def check_allowlist(skills: list[Path]) -> list[str]:
+    """Check the allow-list itself, not just the repo's conformance to it.
+
+    KNOWN_NONSKILLS exempts tokens from check 3. Nothing verified the list: an entry that
+    is also an installed skill would silently exempt that skill from the dangling-name
+    check, and the suite would stay green. That is an assertion about conformance standing
+    in for an assertion about the property -- the shape views-datafactory named as C-351.
+    """
+    # Stale entries are deliberately not flagged: an entry matching nothing exempts a
+    # token nobody writes, which costs nothing, while flagging them churns the list every
+    # time a term leaves the prose. Only the case that hides a real bug is checked.
+    installed = {d.name for d in skills}
+    bad = [f"KNOWN_NONSKILLS exempts '{n}', which IS an installed skill -- "
+           f"it would be silently unchecked" for n in sorted(installed & KNOWN_NONSKILLS)]
+    return bad
+
+
 CHECKS = [
     ("frontmatter", check_frontmatter),
     ("references", check_references),
     ("skill-names", check_skill_names),
     ("external-paths", check_external_paths),
     ("readme", check_readme),
+    ("allowlist", check_allowlist),
 ]
 
 
