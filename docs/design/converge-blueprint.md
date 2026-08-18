@@ -205,13 +205,28 @@ E1 principally tests the CLAUDE.md digest; E2 and E3 test the skill. A fourth ev
 
 ---
 
-## 9. Open — decisions not yet made
+## 9. Resolved — the decisions this document was waiting on
 
-- [ ] **Simon has one further input to add.** Reserved; this section is the slot for it. *(pending)*
-- [ ] Global vs per-project scope for the digest, and whether to include a deference clause (risk 3)
-- [ ] Whether to run the §6 evals before or after drafting the skill body — the docs say before
-- [ ] Final name: `converge` vs `converging` (gerund) vs `earn-it` (rhymes with `ship-it`)
-- [ ] Whether to add the convergence seat to `expert-code-review` as a follow-up
+All five closed. Kept rather than deleted: what was decided is less useful than what it
+was decided *against*.
+
+- [x] **Simon's further input.** Delivered — it was the views_platform registers and
+  post-mortems, which became §11 and falsified four of this document's claims.
+- [x] **Global vs per-project scope.** Neither. It is a **path-scoped rule** at
+  `~/.claude/rules/design-preferences.md`, gated on `paths: ["**/*.py"]` — zero cost in
+  prose sessions, automatic on contact with code. A mechanism neither option anticipated.
+- [x] **Evals before or after.** Before, per the docs. All four baselines **passed
+  unaided**, which is why Machinery, Scope and Stopping are one line each rather than
+  nine: the model already behaves that way and needed the preference confirmed, not taught.
+- [x] **Final name.** `design-preferences`. `converge` named one section of nine and had
+  been quietly distorting the design for two days.
+- [x] **Convergence seat in `expert-code-review`.** Built, as **the Maintainer seat** —
+  speaks last, issues a sufficiency verdict, removes findings not worth acting on.
+
+**Still open, and belonging to §10 rather than here:** the `import-linter` contracts for
+ADP, which is a per-repo campaign; and whether the rule earns its place at all, which only
+elapsed use can answer. The firing log at `~/.claude/logs/instructions.jsonl` is the
+evidence — 12 real loads so far, all in code repos, none in a prose session.
 
 ---
 
