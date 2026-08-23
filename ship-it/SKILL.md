@@ -1,6 +1,6 @@
 ---
 name: ship-it
-description: Validates and ships local changes through a gated pipeline of linting (ruff), import contracts (lint-imports, only where a repo declares them), testing (pytest), staging, committing, and pushing. Use when user says "ship it", "commit and push", "push my changes", "finalize changes", "land this", or "ship my work". Do NOT use for code review, refactoring, running tests in isolation, or deploying to production.
+description: Validates and ships local changes through a gated pipeline of linting (ruff), import contracts (lint-imports, only where a repo declares them), testing (pytest), staging, committing, an independent guard audit of any tests the commit adds (falsify guard mode, only when tests changed), and pushing. Use when user says "ship it", "commit and push", "push my changes", "finalize changes", "land this", or "ship my work". Do NOT use for code review, refactoring, running tests in isolation, or deploying to production.
 ---
 
 # Ship It
@@ -82,6 +82,34 @@ Write a commit message that:
 - Matches the repo's existing style (conventional commits, plain, etc.)
 
 Create the commit.
+
+### Step 5.5 — Guard audit (only if this commit adds or changes a test)
+
+Check whether the commit just created touches any test file.
+
+**If it does not: skip this step silently.** Say nothing.
+
+**If it does:** run `falsify` in **guard mode** over this commit's guards.
+
+Two things make this step work, and it is worthless without either:
+
+- **Delegate it to a subagent with a clean context.** The session running `ship-it` is the session
+  that wrote the code, and the auditor may not be the author — an author's guard and an author's
+  test of that guard come from the same model of failure, which is the one that already missed the
+  defect. Give the subagent the commit and the source, not the conversation.
+- **Run it here, after the commit and before the push.** The tree is clean, so a mutation can be
+  applied and reverted with `git checkout --`, and nothing has left the machine yet.
+
+Report per guard: **DECORATIVE**, **WEAK**, **HOLDS**, or **UNVERIFIED**, naming every surviving
+mutation as a concrete change to production code that left the suite green.
+
+If any guard is DECORATIVE or WEAK: **STOP.** Report them and ask whether to amend the commit or
+proceed anyway. Do not push on the assumption that a green suite means the guards work — that
+assumption is the reason this step exists.
+
+Why it gates the push rather than the commit: a decorative guard is not a broken build, it is a
+piece of protection the repository is about to start believing in. The cost of learning that after
+the push is that the belief is now shared.
 
 ### Step 6 — Push
 

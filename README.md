@@ -22,7 +22,7 @@ A collection of Claude Code skills for software engineering governance, strategi
 | **test-review** | Audit test coverage and quality from 5 expert perspectives |
 | **review-base-docs** | Detect drift between governance docs and current code |
 | **review-diff** | Pre-ship changeset review for maintainability |
-| **falsify** | Popperian falsification audit against claims about software behavior |
+| **falsify** | Popperian falsification audit. Claim mode attacks a claim about behavior; guard mode mutates production code to find what an existing test fails to catch |
 | **expert-method-review** | Library-grounded multi-persona critique of ML/research design and methodology |
 
 ### Strategic Writing
@@ -91,6 +91,8 @@ Skills compose through filesystem artifacts, not programmatic APIs. Where respon
 | **rnd-dossier** vs **expert-method-review** | Experiment lifecycle governance (scaffold, pre-register, log, promote) | Design critique that shapes what's worth testing | Dossier orchestrates; method-review critiques `02_design` before pre-registration |
 | **rnd-dossier** vs **register-risk** | Records experiment outcomes and methodology gaps | Owns the risk register (dedup, tiering, linking) | Dossier outputs register-compatible risks; `register-risk` handles intake |
 | **library** vs all research/writing skills | Data layer: papers, claims, metadata, search index, verification engine | Each skill's domain concern | Skills consume library via `/library search`, `/library find`, `/library verify`, sidecar reads. No skill duplicates library storage or search |
+| **ship-it** vs **falsify** (guard mode) | The release pipeline and its gates | Whether a guard can fail at all | ship-it Step 5.5 delegates to falsify guard mode when a commit touches tests, in a **subagent with a clean context** — the auditor may not be the author. Runs after the commit, before the push, so the tree is clean and nothing has been shared yet |
+| **falsify** (guard mode) vs **test-review** | One guard: can it fire? Mutates production code to find out | The suite: coverage, quality, red/beige/green taxonomy, CIC alignment | Guard mode is per-changeset and adversarial; test-review is whole-suite and evaluative. Guard mode never assesses coverage; test-review never mutates code |
 
 ## Installation
 
