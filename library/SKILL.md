@@ -235,16 +235,17 @@ Add a new paper to the library. This is a multi-phase HITL workflow.
 
 #### Phase 1: Prepare
 
-**Step 1a: Copy and rename the PDF.** Before calling `add_prepare`, the PDF must be in `papers/` with a convention-compliant name per ADR-019: `<FirstAuthorSurname><Year>_<ShortTitle>.pdf`. If the PDF is elsewhere (e.g., `incoming/`), copy it to `papers/` with the correct name first. Read the first page of the PDF to determine the correct author/year/title if needed.
+**Naming convention (ADR-019):** PDFs in `papers/` use `<FirstAuthorSurname><Year>_<ShortTitle>.pdf`.
 
-Naming rules:
 - `FirstAuthorSurname`: last name of first author, no accents, capitalized
 - `Year`: four-digit publication year
 - `ShortTitle`: 2-5 word descriptive title, CamelCase
 
 Examples: `Gneiting2007_StrictlyProperScoringRules.pdf`, `Giacomini2006_TestsConditionalPredictiveAbility.pdf`
 
-**Step 1b: Run add_prepare** with the correctly-named PDF in `papers/`.
+Before calling `add_prepare`, rename the PDF to the convention-compliant name (in place, wherever it sits — e.g. `incoming/`). `add_prepare` automatically moves it into `papers/`. It will fail if a PDF with that name already exists in `papers/`.
+
+**Run add_prepare** with the PDF path (can be anywhere — `incoming/`, a download folder, etc.).
 
 ```bash
 cd /home/simon/brain/9_library/library_system && .venv/bin/python -c "
@@ -380,6 +381,23 @@ print(json.dumps(result, indent=2))
 "
 ```
 
+**Appending claims to an existing paper:** If the paper already has claims (e.g., adding a claim after an opponent audit), pass `append=True` to preserve existing claims:
+
+```bash
+cd /home/simon/brain/9_library/library_system && .venv/bin/python -c "
+import json
+from src.library import add_finalize, get_config
+config = get_config()
+accepted_claims = NEW_CLAIMS_JSON
+accepted_relations = NEW_RELATIONS_JSON
+corrections = CORRECTIONS_JSON_OR_NULL
+result = add_finalize('PAPER_ID', accepted_claims, accepted_relations, corrections, config, append=True)
+print(json.dumps(result, indent=2))
+"
+```
+
+Without `append=True`, `add_finalize` replaces all existing claims. Use `append=True` whenever the paper already has claims you want to keep.
+
 Report:
 - Claims stored (with assigned IDs)
 - Relations stored
@@ -404,7 +422,19 @@ print(f'Citation keys: {meta.citation_keys}')
 "
 ```
 
-After finalization, suggest running `/library rebuild` to update the search index.
+After finalization, update the search index incrementally:
+
+```bash
+cd /home/simon/brain/9_library/library_system && .venv/bin/python -c "
+import json
+from src.library import library_index_add, get_config
+config = get_config()
+result = library_index_add(['PAPER_ID'], config)
+print(json.dumps(result, indent=2))
+"
+```
+
+This takes ~6-10 seconds per paper vs ~55 minutes for a full rebuild. Use `/library rebuild` only for first-time index creation or after schema changes.
 
 #### Phase 5: Key Passages
 
@@ -440,7 +470,17 @@ print('Key passages saved.')
 "
 ```
 
-Report the number of key passages stored. Then suggest running `/library rebuild` to update the search index.
+Report the number of key passages stored. Then update the search index incrementally (the key_passages text is indexed for FTS):
+
+```bash
+cd /home/simon/brain/9_library/library_system && .venv/bin/python -c "
+import json
+from src.library import library_index_add, get_config
+config = get_config()
+result = library_index_add(['PAPER_ID'], config)
+print(json.dumps(result, indent=2))
+"
+```
 
 #### Phase 6: Update Extraction Quality Register
 
