@@ -4,9 +4,9 @@
 |-------------------|--------------------------------------|
 | Project           | claude-code-skills                   |
 | Owner             | Polichinl (simmaa@prio.org)          |
-| Last Updated      | 2026-08-17                           |
-| Total Concerns    | 15                                   |
-| Open Concerns     | 11                                   |
+| Last Updated      | 2026-08-23                           |
+| Total Concerns    | 18                                   |
+| Open Concerns     | 14                                   |
 | Resolved Concerns | 4                                    |
 
 ---
@@ -23,6 +23,66 @@
 ---
 
 ## Open Concerns
+
+### C-18: a cross-repo census was published as measurement into 16 issue trackers, and its negative claims were wrong in 3 of 11 cases
+
+| Field | Value |
+|-------|-------|
+| ID | C-18 |
+| Tier | 3 |
+| Source | manual (2026-08-23) |
+| Trigger | When work driven from this repository is about to assert a **negative** about another repository — "no enforcement test", "no contract", "not declared" — and that assertion will be published as a GitHub issue, comment, or report: verify by the property, not by the search. If that is not possible, state the detection method and what forms it would miss, in the published text. |
+| Location | No in-repo artifact holds the census — it existed only in conversation and now in 16 external issue bodies. `docs/design/converge-blueprint.md:226-229` is the nearest record, and mentions the campaign without the measurements. |
+
+On 2026-08-18 an import-topology census across all views_platform repositories was filed as an investigative issue in sixteen of them. Eleven of those issues asserted `enforcement test: **none**`. Three were false: `views-bayesian` had a 200-line `tests/test_layer_boundaries.py` guarding seven of ten packages, `views-postprocessing` had `tests/test_clone_readiness.py` (named in its own ADR-002 as the mechanical enforcer of the `contract/ ↛ unfao/` seam), and `views-baseline` had a permanent acyclicity guard inside a `/falsify` artifact. The detection method searched for `[tool.importlinter]` blocks and import-enforcement-shaped filenames, so every guard named for something else was invisible to it — and absence of a match was published as absence of the property.
+
+That is the same C-350/C-351 shape the issues themselves are about: an assertion about a proxy standing in for an assertion about the property. The cost is not hypothetical — `views-bayesian#4` recommended building a guard that already existed, and `views-baseline#83` recommended doing nothing on the grounds the repo was too small, when it in fact already held the property by a better mechanism. Corrections are posted on all three. The eight remaining "none" claims were re-checked and stand.
+
+Tier 3 rather than 2: the failure produces wasted or misdirected work in other repositories, not incorrect behaviour in any running system. It escalates if a negative claim of this kind is ever used to justify **removing** an existing guard.
+
+See also C-15 (`check_skill_names` has the same shape — backtick-and-slash detection publishes silence about bare prose mentions) and C-17 (an absence that was never recorded as deliberate).
+
+---
+
+### C-17: the rule's record of what it deliberately excludes has one entry, and lives where neither Claude nor a reader will see it
+
+| Field | Value |
+|-------|-------|
+| ID | C-17 |
+| Tier | 3 |
+| Source | manual (2026-08-23) |
+| Trigger | When you next believe a preference is missing from `~/.claude/rules/design-preferences.md` and are about to add it: check whether it was ever in Appendix A first, and record the answer as a "deliberately not here" line **whether or not you add the ruling**. An unrecorded absence is the thing that invites the next addition. |
+| Location | `~/.claude/rules/design-preferences.md:22-25` (the sole exclusion note, inside a block HTML comment stripped before the file enters context), `docs/design/converge-blueprint.md:394` (Appendix A, the normative source) |
+
+The rule file carries exactly one record of a deliberate omission — acyclic dependencies, excluded because import-linter enforces them deterministically. Everything else the rule does not say is indistinguishable from an oversight. On 2026-08-23 that surfaced: test-driven development was believed to be part of the rule, was not, and had never been in Appendix A either — the source mentions testing four times and every one is a *property* of finished code (`easy to test`, `tested`, `testability`), never a process. The compression was faithful; the gap was in the record of scope, not in the rule.
+
+The exclusion note is also doubly invisible. It sits inside the HTML comment that is stripped before Claude sees the file, and nothing surfaces it to a human either — the rule is never opened in normal use, because the whole point of a path-scoped rule is that it loads without being asked for. So the one mechanism guarding against unbounded growth is the mechanism least likely to be read.
+
+Tier 3: the failure mode is additive. Each unrecorded absence invites a patch, each patch is a line whose *why* is weaker than the eight that were compressed from a source document, and the file grows in exactly the way the design cited (arXiv 2608.11095, +226% instruction growth, rewrites resuming growth faster) was built to avoid.
+
+See also C-18 (an unrecorded negative, published) and C-16 (the other blind spot in this rule's instrumentation).
+
+---
+
+### C-16: the rule-load breadcrumb proves a load happened, not that the rule arrived
+
+| Field | Value |
+|-------|-------|
+| ID | C-16 |
+| Tier | 3 |
+| Source | manual (2026-08-23) |
+| Trigger | When the design preferences appear not to be followed and you reach for `~/.claude/logs/instructions.jsonl` as evidence: it cannot answer that question. Check the rule file's own size and frontmatter first — an empty, truncated, or broken-frontmatter file produces a log entry identical to a healthy one. |
+| Location | `~/.claude/hooks/log-instructions.sh:24` (`bytes: ((.file_content // "") \| length)`), `~/.claude/logs/instructions.jsonl`, `~/.claude/rules/design-preferences.md` — all three outside this repository and therefore outside `scripts/validate_skills.py` entirely |
+
+The `InstructionsLoaded` payload carries no `file_content` field, so the `bytes` value the hook was written to record is `0` on 76 of 77 logged loads. What the log proves is that Claude Code matched the path glob and attempted the load — file path, `load_reason`, session, cwd, timestamp. What it cannot distinguish is a rule that arrived in full from one that arrived empty.
+
+This matters because `docs/design/converge-blueprint.md:228-229` names this log as *the* evidence for the open question of whether the rule earns its place at all. It is good evidence for reach — 77 loads, 14 sessions, 13 directories, none in a prose session, which is the scoping working. It is no evidence at all for content. The gap is in the harness, not the hook: no other field in the payload substitutes.
+
+Tier 3: nothing corrupts if the rule silently empties — code simply gets written without the preferences, which is the pre-2026-08-17 baseline and was measured to pass four evals unaided. The cost is that the one instrument built to answer "is this working" would read identically in the case where it had stopped.
+
+See also C-14 (the same family: an invariant stated in prose, enforced by nothing, invisible when violated) and C-15 (the validator's enforcement gap — this is a fourth artifact it cannot reach, because it lives outside the repository).
+
+---
 
 ### C-15: the validator's strongest check runs nowhere by default, and it has two documented blind spots
 
