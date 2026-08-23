@@ -83,3 +83,96 @@ surviving.
 - **Recording effort is not uniform.** faoapi has 194 entries and 6 post-mortems; bayesian has 20
   and none. Higher counts may measure diligence rather than incidence, and the table above therefore
   counts repositories rather than events.
+
+---
+
+# RESULTS — collected 2026-08-23, after the above was committed (`77439f8`)
+
+## Counts, in distinct repositories
+
+| pattern | repos | band | consequence per the fixed table |
+|---|---:|---|---|
+| **P1** plan-time overproduction | **2** | recurring | small targeted mechanism justified; nothing platform-wide |
+| **P2** non-converging fix rounds | **2** | recurring | same |
+| **P3** guards that could not fire | **9** | **systemic** | **a platform-level intervention is justified** |
+
+**P3 hits:** views-faoapi, views-postprocessing, views-appwrite, views-crafdapi, views-evaluation,
+views-frames, views-impact, views-models, views-pipeline-core.
+**P1 and P2 hits:** views-faoapi, views-postprocessing.
+
+## The falsifier fired — I withdraw the plan↔diff gate
+
+The pre-registered rule was: *"P3 systemic, P1 not → the intervention is about verification quality,
+not planning. The plan↔diff comparison is **not** warranted and I withdraw it."*
+
+P3 is systemic at 9 repositories. P1 sits at 2 — real, but four and a half times narrower, and both
+instances are ones a human already caught in-flight. **The gate I proposed before collecting data is
+not what the evidence supports, and it is withdrawn.**
+
+## What the search got wrong on the way, and it is the register's own C-18
+
+The first P1 sweep returned four files across three repositories. On reading them, three were false
+positives: *"nobody asked what else in `file.py` pages"* (views-pipeline-core, twice) is
+**under**-investigation, the opposite of overproduction, and views-hydranet's *"the independent
+cross-check nobody asked for"* is a ten-line validation table framed as a virtue. A fourth sweep on
+broader terms returned nine repositories, of which the readable hits were views-appwrite naming
+scope creep **prospectively** as a risk, and views-baseline and views-hydranet recording proposals
+**declined** as over-engineered — evidence of the discipline working, counted as evidence of its
+failure.
+
+Had I reported file counts, P1 would have read as 9 repositories and systemic. That is C-18 exactly,
+committed inside the measurement written to avoid it.
+
+## The finding that was not pre-registered, and matters more than the counts
+
+P3's mechanism is stated precisely in two independent repositories, and it is not a discipline
+problem.
+
+**views-postprocessing** (2026-08-12): *"The author proposed thirteen forms and proved all thirteen
+caught. An independent review proposed twenty-nine."*
+
+**views-frames**: *"a check written to catch that can itself pass vacuously in at least three ways,
+and **every one of them was found by someone other than its author**."*
+
+**An author cannot test what they did not imagine.** No instruction fixes that, because the failure
+is in the author's model of what could go wrong, and the guard is written from that same model. It
+is why 19,229 lines of tests in views-faoapi did not catch eight weeks of empty deliveries, and why
+1.46 lines of test per line of source bought nothing.
+
+## Interventions already measured on this platform
+
+Recorded here because they were tested in production incidents, with outcomes, and none needs to be
+invented.
+
+| intervention | measured outcome | source |
+|---|---|---|
+| **Adversarial mutation reviewer** — briefed *only* to supply mutants the author had not thought of | *"the single highest-value input of the arc."* Five parallel reviewers found what **four rounds of self-review had not** | views-postprocessing 2026-08-12 |
+| **The one-home rule** — reasoning lives in the register; ADRs record decisions, never implementation | #248 took **twelve** commits; #243, the first under the rule, took **five**. *"the only intervention that moved the number"* | same |
+| **No number without a command in the same turn** — nothing reaches a comment, commit or ADR unmeasured | adopted mid-sprint after a figure was posted wrong, corrected, and the correction was also wrong | same |
+| **Refusing to chase** — write down what is *not* being fixed, and why | *"prevented a sixth round"* | same |
+| **Deletion as default remedy** | three of five stories were net deletions; each closed its defect more completely than a repair | same |
+| **Maintainer intervention mid-flight** | nine stories of widening became three; shipped | same |
+
+## A second unregistered finding: the prose, not the code
+
+views-postprocessing measured **341 lines of code against 452 lines of docs and register** in that
+arc — *"one and a third lines of prose for every line of code. And nearly every defect the reviews
+found lived in the prose, not the code."* Its diagnosis of the engine is mechanical and worth
+carrying: an ADR that describes current implementation *becomes a second copy of the code and rots
+on every change*. Most of #248's twelve commits were repairing implementation descriptions that
+should never have been in an ADR.
+
+This directly contradicts the initial diagnosis in that same incident (*"the guard surface is
+bloated"*, which produced a wrong acceptance criterion). The corrected finding: **the prose was
+bloated; the guards were mostly missing.**
+
+## Limits of this result
+
+- **Detection tracks reading effort.** P1 and P2 were confirmed only in the two post-mortems I read
+  in full. Other repositories were searched, not read. Both counts are lower bounds and the gap
+  between 2 and 9 is partly an artefact of how deeply each corpus was examined.
+- **P3 is likely under-counted for the opposite reason.** A guard that cannot fire is invisible until
+  someone notices; nine repositories recorded it, and nothing suggests the search is exhausted.
+- **Two repositories dominate the qualitative evidence.** views-faoapi and views-postprocessing
+  wrote the most detailed post-mortems, which is why they supply most of the mechanism. Diligence,
+  not incidence.
