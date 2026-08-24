@@ -38,11 +38,15 @@ Guard mode was wired into `ship-it` Step 5.5 on 2026-08-23 so that guards are au
 
 Reported by the session working on views-pipeline-core PR #483, which verified Step 5.5 does what it claims and then observed that **every commit on that branch reached the remote by raw `git push`, including the commits that added guards.** The gate has never fired there. Bypass rate in the only repository with data: 100%.
 
+**The 100% is one branch, and the source said so before I did.** It is a single branch whose author had the tool available and did not reach for it, which may measure that author rather than the gate. Treat it as an existence proof that the bypass is trivially available, not as a rate. What is not sample-dependent is the structure: nothing in the design requires `ship-it`, so the gate's coverage equals the fraction of pushes that happen to go through it, and that fraction is unmeasured everywhere else.
+
 This is M6 from guard mode's own mutation catalogue — *"Correct, and never runs"* — whose recorded instances are views-faoapi's `smoke.py check_coverage` (a correct assertion that runs only when a human deploys) and this register's own C-15 (the external-paths check, skipped in CI). A guard published as protection, credited as coverage, and executed by nobody, is the failure the skill was built to detect, committed in the skill that detects it.
 
 The fix is not more instruction. `scripts/install-hooks.sh` already establishes the pattern: a pre-push hook is deterministic and cannot be skipped by choosing a different command. A hook cannot run the audit itself — that needs a model — but it can refuse a push whose commits touch tests and carry no audit record. Not built; recorded, because building it unprompted is the pattern this repository spent 2026-08-23 measuring.
 
 See also C-15 (same shape, same repository, different artifact — the strongest check runs nowhere by default) and C-16 (the other place where an instrument reports on itself and cannot distinguish working from absent).
+
+Related, from the same reporter: views-pipeline-core C-304 generalises the prose-drift diagnosis this exchange started from. Measured across four artifacts, mechanism-naming density did **not** predict correction count — the artifact with the lowest density had nearly the most corrections. What rotted there was prose copying *observables* of other kinds: verdict strings lifted from a renderer, a behavioural claim that was true when written and false two commits later, and a fact about the world that had already changed. The rule is wider than ADRs describing code: **any prose that copies any observable rots when the observable moves.** That applies directly to this register, which quotes line counts, finding counts and verdicts throughout.
 
 ---
 
