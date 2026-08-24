@@ -4,9 +4,9 @@
 |-------------------|--------------------------------------|
 | Project           | claude-code-skills                   |
 | Owner             | Polichinl (simmaa@prio.org)          |
-| Last Updated      | 2026-08-23                           |
-| Total Concerns    | 18                                   |
-| Open Concerns     | 14                                   |
+| Last Updated      | 2026-08-24                           |
+| Total Concerns    | 19                                   |
+| Open Concerns     | 15                                   |
 | Resolved Concerns | 4                                    |
 
 ---
@@ -23,6 +23,28 @@
 ---
 
 ## Open Concerns
+
+### C-19: the guard-mode gate shipped with the defect its own catalogue calls M6 — correct, and never runs
+
+| Field | Value |
+|-------|-------|
+| ID | C-19 |
+| Tier | 2 |
+| Source | pr-review (2026-08-24, reported by the views-pipeline-core session) |
+| Trigger | Before treating "ship-it will catch it" as coverage for anything — a decorative guard, an unaudited fix, a test added in a hurry — check whether the branch in question was actually shipped through `ship-it`. If any commit reached the remote by raw `git push`, the gate did not fire and there is no audit record. |
+| Location | `ship-it/SKILL.md` (Step 5.5), `falsify/references/guard_mutations.md` (M6, which names this exact failure), `scripts/install-hooks.sh` (the pre-push hook precedent this does not use) |
+
+Guard mode was wired into `ship-it` Step 5.5 on 2026-08-23 so that guards are audited without anyone naming a test file. The step is correct — subagent with a clean context, gates the push rather than the commit, stops on DECORATIVE or WEAK. It fires only if someone invokes `ship-it`, and nothing requires that.
+
+Reported by the session working on views-pipeline-core PR #483, which verified Step 5.5 does what it claims and then observed that **every commit on that branch reached the remote by raw `git push`, including the commits that added guards.** The gate has never fired there. Bypass rate in the only repository with data: 100%.
+
+This is M6 from guard mode's own mutation catalogue — *"Correct, and never runs"* — whose recorded instances are views-faoapi's `smoke.py check_coverage` (a correct assertion that runs only when a human deploys) and this register's own C-15 (the external-paths check, skipped in CI). A guard published as protection, credited as coverage, and executed by nobody, is the failure the skill was built to detect, committed in the skill that detects it.
+
+The fix is not more instruction. `scripts/install-hooks.sh` already establishes the pattern: a pre-push hook is deterministic and cannot be skipped by choosing a different command. A hook cannot run the audit itself — that needs a model — but it can refuse a push whose commits touch tests and carry no audit record. Not built; recorded, because building it unprompted is the pattern this repository spent 2026-08-23 measuring.
+
+See also C-15 (same shape, same repository, different artifact — the strongest check runs nowhere by default) and C-16 (the other place where an instrument reports on itself and cannot distinguish working from absent).
+
+---
 
 ### C-18: a cross-repo census was published as measurement into 16 issue trackers, and its negative claims were wrong in 3 of 11 cases
 
